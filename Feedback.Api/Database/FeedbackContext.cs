@@ -18,6 +18,8 @@ public sealed class FeedbackContext : DbContext
 
     public DbSet<Topic> Topics { get; set; }
 
+    public DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 }

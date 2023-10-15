@@ -1,0 +1,16 @@
+﻿@page "/login"
+@using Feedback.Shared;
+
+<EditForm Model="LoginRequest" OnSubmit="OnSubmit">
+    <InputText @bind-Value="LoginRequest.Login"></InputText>
+    <InputText @bind-Value="LoginRequest.Password"></InputText>
+</EditForm>
+
+@code {
+    public LoginRequest LoginRequest = new();
+
+    private void OnSubmit()
+    {
+        
+    }
+}
