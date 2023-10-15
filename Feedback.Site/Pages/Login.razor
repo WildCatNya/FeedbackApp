@@ -1,16 +1,30 @@
 ﻿@page "/login"
+
 @using Feedback.Shared;
+@using System.Text.Json;
+
+@inject Feedback.Site.Abstractions.ILocalStorageService localStorage;
+@inject HttpClient httpClient;
 
 <EditForm Model="LoginRequest" OnSubmit="OnSubmit">
     <InputText @bind-Value="LoginRequest.Login"></InputText>
     <InputText @bind-Value="LoginRequest.Password"></InputText>
+    <button type="submit">Submit</button>
 </EditForm>
+
+<p>@LoginRequest.Login</p>
+<p>@LoginRequest.Password</p>
 
 @code {
     public LoginRequest LoginRequest = new();
 
     private void OnSubmit()
     {
-        
+        HttpRequestMessage requestMessage = new(HttpMethod.Post, "/api/auth/login")
+        {
+            Content = new StringContent(JsonSerializer.Serialize<LoginRequest>(LoginRequest))
+        };
+
+        httpClient.Send(new(HttpMethod.Get, "/api/auth/login"));
     }
 }

@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Feedback.Api.Controllers;
 
-[ApiController]
-[Route("/api/[controller]")]
-public class TopicController : ControllerBase
+public class TopicController : BaseController
 {
     private readonly FeedbackContext _context;
 
@@ -31,12 +29,7 @@ public class TopicController : ControllerBase
         if (topic is not null)
             return Ok(topic);
 
-        ProblemDetails problem = new()
-        {
-            Status = StatusCodes.Status404NotFound,
-            Detail = "No topic exist"
-        };
-
-        return NotFound(problem);
+        return NotFound(new ProblemDetails() 
+            { Status = StatusCodes.Status404NotFound, Detail = "Такого предмета нет" });
     }
 }

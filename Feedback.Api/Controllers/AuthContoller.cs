@@ -23,14 +23,12 @@ public class AuthContoller : BaseController
         User? user = _context.Users.FirstOrDefault(x => x.Login == loginRequest.Login);
 
         if (user is null)
-        {
-            return NotFound();
-        }
+            return NotFound(new ProblemDetails() 
+                { Status = StatusCodes.Status404NotFound, Detail = "Пользователь не найден" });
 
         if (!BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash))
-        {
-            return BadRequest();    
-        }
+            return BadRequest(new ProblemDetails()
+                { Status = StatusCodes.Status400BadRequest, Detail = "Пароль введён неверно" });
 
         var claims = new List<Claim>
         {
