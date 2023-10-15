@@ -1,4 +1,7 @@
 
+using Feedback.Api.Database;
+using Microsoft.EntityFrameworkCore;
+
 namespace Feedback.Api
 {
     public class Program
@@ -13,6 +16,11 @@ namespace Feedback.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            string? connectionString = builder.Configuration.GetConnectionString("MariaDb");
+
+            builder.Services.AddDbContext<FeedbackContext>(options => 
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             var app = builder.Build();
 
