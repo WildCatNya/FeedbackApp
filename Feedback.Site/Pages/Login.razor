@@ -2,6 +2,7 @@
 
 @using Feedback.Shared;
 @using System.Text.Json;
+@using System.Text;
 
 @inject Feedback.Site.Abstractions.ILocalStorageService localStorage;
 @inject HttpClient httpClient;
@@ -12,19 +13,47 @@
     <button type="submit">Submit</button>
 </EditForm>
 
-<p>@LoginRequest.Login</p>
-<p>@LoginRequest.Password</p>
+<p>@Message</p>
 
 @code {
-    public LoginRequest LoginRequest = new();
+    private LoginRequest LoginRequest = new();
 
-    private void OnSubmit()
+    public string? Message;
+
+    // private async void OnSubmit()
+    // {
+    //     string url = "https://localhost:44310/api/Auth/login";
+
+    //     var response = await httpClient.PostAsJsonAsync<LoginRequest>(url, new() { Login = LoginRequest.Login, Password = LoginRequest.Password });
+
+    //     if (response.IsSuccessStatusCode)
+    //     {
+    //         Message = await response.Content.ReadAsStringAsync();
+    //     }
+    //     else
+    //     {
+    //         Message = "NO";
+    //     }
+    // }
+    private async void OnSubmit()
     {
-        HttpRequestMessage requestMessage = new(HttpMethod.Post, "/api/auth/login")
-        {
-            Content = new StringContent(JsonSerializer.Serialize<LoginRequest>(LoginRequest))
-        };
+        string url = "/api/Auth/login";
 
-        httpClient.Send(new(HttpMethod.Get, "/api/auth/login"));
+        // var request = new HttpRequestMessage(HttpMethod.Post, url);
+        // request.Content = new StringContent(JsonSerializer.Serialize(LoginRequest), Encoding.UTF8, "application/json");
+        // var s = httpClient.Send(request);
+        // var a = await s.Content.ReadAsStringAsync();
+
+        var response = await httpClient.PostAsJsonAsync<LoginRequest>(url, new() { Login = LoginRequest.Login, Password = LoginRequest.Password });
+
+        if (response.IsSuccessStatusCode)
+        {
+            string accessToken = await response.Content.ReadAsStringAsync();
+            await localStorage.SetItem<string>(Constants.AuthLocalStorage, "Bearer" + accessToken);
+        }
+        else
+        {
+            Message = await response.Content.ReadAsStringAsync();
+        }
     }
 }

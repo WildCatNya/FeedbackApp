@@ -20,6 +20,8 @@ public sealed class FeedbackContext : DbContext
 
     public DbSet<User> Users { get; set; }
 
+    public DbSet<UserToken> UserTokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 }

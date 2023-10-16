@@ -28,7 +28,7 @@ public class UserConfigurartion : IEntityTypeConfiguration<User>
                 Id = 1,
                 Login = "kudke",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("gfhjkm"),
-                Role = "Admin"
+                Role = "Administrator"
             }
         });
     }

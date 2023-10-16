@@ -39,19 +39,18 @@ public class Program
             }
             );
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
- {
-     {
-           new OpenApiSecurityScheme
-             {
-                 Reference = new OpenApiReference
-                 {
-                     Type = ReferenceType.SecurityScheme,
-                     Id = "Bearer"
-                 }
-             },
-             new string[] {}
-     }
- });
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme, Id = "Bearer"
+                        }
+                    }, 
+                    Array.Empty<string>()
+                }
+            }); 
         });
 
         string? connectionString = builder.Configuration.GetConnectionString("MariaDb");
@@ -80,6 +79,10 @@ public class Program
                 };
             });
 
+        builder.Services.AddCors(option =>
+            option.AddPolicy("CustomPol", policy =>
+                policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -91,13 +94,10 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        //app.UseBlazorFrameworkFiles();
-        //app.UseStaticFiles();
-        //app.MapFallbackToFile("index.html");
-
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseCors("CustomPol");
 
         app.MapControllers();
 
