@@ -1,3 +1,8 @@
+using Feedback.Server.Database;
+using Feedback.Server.Helpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+
 namespace Feedback.Server;
 
 public class Program
@@ -9,6 +14,26 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
+
+        #region Database
+
+        string connectionString = builder.Configuration.GetConnectionString(FeedbackContext.ConnectionStringName);
+
+        builder.Services.AddDbContext<FeedbackContext>(options => options.UseMySQL(connectionString));
+
+        #endregion
+
+        #region Auth
+
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+        builder.Services.AddAuthorization();
+
+        builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddSingleton<AuthHelper>();
+
+        #endregion
 
         var app = builder.Build();
 
@@ -28,6 +53,9 @@ public class Program
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.Run();
     }
