@@ -9,7 +9,18 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <a href="/login">
+                        <span class="oi oi-account-login"></span>
+                    </a>
+                </NotAuthorized>
+                <Authorized>
+                    <a href="/logout">
+                        <span class="oi oi-account-logout"></span>
+                    </a>
+                </Authorized>
+            </AuthorizeView>
         </div>
 
         <article class="content px-4">
