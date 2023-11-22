@@ -3,26 +3,24 @@
 @inject AuthHelper AuthHelper;
 @inject NavigationManager NavigationManager;
 
-<CascadingAuthenticationState>
-    <AuthorizeView>
-        <NotAuthorized>
-            <EditForm Model="AuthHelper" Context="Model">
-                <div class="mb-3">
-                    <label for="@nameof(AuthHelper.Login)" class="form-label">Name</label>
-                    <InputText @bind-Value="AuthHelper.Login" class="form-control" />
-                </div>
+<AuthorizeView>
+    <NotAuthorized>
+        <EditForm Model="AuthHelper" Context="Model">
+            <div class="mb-3">
+                <label for="@nameof(AuthHelper.Login)" class="form-label">Name</label>
+                <InputText @bind-Value="AuthHelper.Login" class="form-control" />
+            </div>
 
-                <div class="mb-3">
-                    <label for="@nameof(AuthHelper.Password)" class="form-label">Password</label>
-                    <InputText type="password" @bind-Value="AuthHelper.Password" class="form-control" />
-                </div>
+            <div class="mb-3">
+                <label for="@nameof(AuthHelper.Password)" class="form-label">Password</label>
+                <InputText type="password" @bind-Value="AuthHelper.Password" class="form-control" />
+            </div>
 
-                <button type="submit" class="btn btn-primary" @onclick="Send">Send</button>
-            </EditForm>
-        </NotAuthorized>
-        <Authorized>Привет, @(context.User.Identity.Name)</Authorized>
-    </AuthorizeView>
-</CascadingAuthenticationState>
+            <button type="submit" class="btn btn-primary" @onclick="Send">Send</button>
+        </EditForm>
+    </NotAuthorized>
+    <Authorized>Привет, @(context.User.Identity.Name)</Authorized>
+</AuthorizeView>
 
 @code {
     private void Send() => NavigationManager.NavigateTo("/loginhelper", true);

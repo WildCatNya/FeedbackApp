@@ -6,5 +6,7 @@ public sealed class Role : Entity
 {
     public string Name { get; set; } = null!;
 
+    public string Description { get; set; } = null!;
+
     public List<UserAccountRole> UserAccountRoles { get; set; } = [];
 }

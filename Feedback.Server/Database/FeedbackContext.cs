@@ -13,7 +13,13 @@ public class FeedbackContext : DbContext
         Database.EnsureCreated();
     }
 
+    public DbSet<Contact> Contacts { get; set; }
+
     public DbSet<Role> Roles { get; set; }
+
+    public DbSet<Subject> Subjects { get; set; }
+
+    public DbSet<Topic> Topics { get; set; }
 
     public DbSet<UserAccount> UserAccounts { get; set; }
 
