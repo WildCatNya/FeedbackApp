@@ -1,6 +1,7 @@
 ﻿@page "/loginhelper"
 
 @using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
 @using Microsoft.EntityFrameworkCore
 @using System.Security.Claims
 
@@ -28,5 +29,5 @@
         NavigationManager.NavigateTo("/login", true);
     }
 
-    private ClaimsPrincipal GetAnonymous() => new(new ClaimsIdentity());
+    private ClaimsPrincipal GetAnonymous() => new(new ClaimsIdentity(new List<Claim>(), CookieAuthenticationDefaults.AuthenticationScheme));
 }
