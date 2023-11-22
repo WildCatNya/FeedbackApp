@@ -8,7 +8,7 @@ public sealed class ContactConfiguration : IEntityTypeConfiguration<Contact>
 {
     public void Configure(EntityTypeBuilder<Contact> builder)
     {
-        builder.ToTable(nameof(Role));
+        builder.ToTable(nameof(Contact));
 
         builder.HasKey(x => x.Id);
 

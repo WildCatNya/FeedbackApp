@@ -10,6 +10,6 @@ public sealed class DatabaseInstaller : IServiceInstaller
     {
         string connectionString = configuration.GetConnectionString(FeedbackContext.ConnectionStringName);
 
-        services.AddDbContext<FeedbackContext>(options => options.UseMySQL(connectionString));
+        services.AddDbContext<FeedbackContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
     }
 }

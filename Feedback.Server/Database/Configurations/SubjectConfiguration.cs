@@ -13,6 +13,7 @@ public sealed class SubjectConfiguration : IEntityTypeConfiguration<Subject>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Value).HasMaxLength(100);
-        builder.Property(x => x.DepartmentEmail).HasMaxLength(50);
+
+        builder.HasOne(x => x.Role).WithMany(x => x.Subjects).HasForeignKey(x => x.IdRole);
     }
 }

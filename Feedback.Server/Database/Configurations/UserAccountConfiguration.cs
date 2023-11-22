@@ -11,5 +11,7 @@ public sealed class UserAccountConfiguration : IEntityTypeConfiguration<UserAcco
         builder.ToTable(nameof(UserAccount));
 
         builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.DepartmentEmail).HasMaxLength(150);
     }
 }
