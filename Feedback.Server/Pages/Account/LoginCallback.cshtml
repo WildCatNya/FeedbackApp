@@ -24,9 +24,11 @@
         if (loginPermit is null || !loginPermit.IsActive)
             return RedirectToPage("/account/login");
 
+        AuthenticationProperties authenticationProperties = new() { IsPersistent = true };
+
         try
         {
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, loginPermit.UserAccount.GetClaimsPrincipal());
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, loginPermit.UserAccount.GetClaimsPrincipal(), authenticationProperties);
 
             loginPermit.IsActive = false;
 
