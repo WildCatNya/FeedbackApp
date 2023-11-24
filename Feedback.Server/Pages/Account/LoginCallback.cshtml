@@ -24,11 +24,13 @@
         if (loginPermit is null || !loginPermit.IsActive)
             return RedirectToPage("/account/login");
 
-        AuthenticationProperties authenticationProperties = new() { IsPersistent = true };
+        DateTime dateTime = DateTime.Now.ToLocalTime().AddHours(3);
+
+        AuthenticationProperties authenticationProperties = new() { IsPersistent = true, ExpiresUtc = dateTime };
 
         try
         {
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, loginPermit.UserAccount.GetClaimsPrincipal(), authenticationProperties);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, loginPermit.UserAccount.GetClaimsPrincipal(dateTime), authenticationProperties);
 
             loginPermit.IsActive = false;
 

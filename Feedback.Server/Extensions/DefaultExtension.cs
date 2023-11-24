@@ -11,13 +11,15 @@ public static class DefaultExtension
         foreach (var item in source) action.Invoke(item);
     }
 
-    public static ClaimsPrincipal GetClaimsPrincipal(this UserAccount userAccount)
+    public static ClaimsPrincipal GetClaimsPrincipal(this UserAccount userAccount, DateTime? localDateTime = null)
     {
+        string expiration = localDateTime.HasValue ? localDateTime.Value.ToString() : DateTime.Now.ToLocalTime().AddHours(3).ToString();
+
         List<Claim> claims =
         [
             new(ClaimTypes.Name, userAccount.Login),
             new(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),
-            new(ClaimTypes.Expiration, DateTime.Now.ToLocalTime().AddHours(12).ToString())
+            new(ClaimTypes.Expiration, expiration)
         ];
 
         userAccount.UserAccountRoles.Select(x => x.Role?.Name)
