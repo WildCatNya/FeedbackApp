@@ -1,0 +1,45 @@
+﻿@page "/account/login/callback"
+
+@using Feedback.Server.Database
+@using Feedback.Server.Database.Entities
+@using Feedback.Server.Extensions
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+
+@inject FeedbackContext DatabaseContext;
+
+@functions {
+    public async Task<IActionResult> OnGetAsync(string? idLoginPermit)
+    {
+        int id = ToInt32(idLoginPermit);
+
+        LoginPermit? loginPermit = await DatabaseContext.LoginPermits
+            .Include(x => x.UserAccount)
+                .ThenInclude(x => x.UserAccountRoles)
+                    .ThenInclude(x => x.Role)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (loginPermit is null || !loginPermit.IsActive)
+            return RedirectToPage("/account/login");
+
+        try
+        {
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, loginPermit.UserAccount.GetClaimsPrincipal());
+
+            loginPermit.IsActive = false;
+
+            DatabaseContext.SaveChanges();
+
+            return RedirectToPage("/_Host");
+        }
+        catch (Exception ex)
+        {
+            return RedirectToPage("/_Host");
+        }
+    }
+
+    private int ToInt32(string value) =>
+        int.TryParse(value, out int result) ? result : 0;
+}

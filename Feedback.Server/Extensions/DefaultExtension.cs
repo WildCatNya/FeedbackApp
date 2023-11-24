@@ -11,7 +11,7 @@ public static class DefaultExtension
         foreach (var item in source) action.Invoke(item);
     }
 
-    public static ClaimsPrincipal GetClaimsPrincipal(this UserAccount? userAccount)
+    public static ClaimsPrincipal GetClaimsPrincipal(this UserAccount userAccount)
     {
         List<Claim> claims =
         [

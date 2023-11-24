@@ -10,5 +10,7 @@ public sealed class UserAccount : Entity
 
     public string DepartmentEmail { get; set; } = null!;
 
+    public List<LoginPermit> LoginPermits { get; set; } = [];
+
     public List<UserAccountRole> UserAccountRoles { get; set; } = [];
 }

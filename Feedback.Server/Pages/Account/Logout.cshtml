@@ -1,0 +1,12 @@
+﻿@page "/account/logout"
+
+@using Microsoft.AspNetCore.Authentication
+
+@functions {
+    public async Task<ActionResult> OnGetAsync()
+    {
+        await HttpContext.SignOutAsync();
+
+        return RedirectToPage("/_Host");
+    }
+}

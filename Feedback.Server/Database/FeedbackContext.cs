@@ -15,6 +15,8 @@ public class FeedbackContext : DbContext
 
     public DbSet<Contact> Contacts { get; set; }
 
+    public DbSet<LoginPermit> LoginPermits { get; set; }
+
     public DbSet<Role> Roles { get; set; }
 
     public DbSet<Subject> Subjects { get; set; }

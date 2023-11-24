@@ -1,0 +1,58 @@
+﻿@page "/account/login"
+
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore.ChangeTracking
+
+@inject FeedbackContext DatabaseContext;
+@inject IJSRuntime JSRuntime;
+@inject NavigationManager NavigationManager;
+
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="mb-3">
+            <label for="@nameof(LoginString)" class="form-label">Login</label>
+            <InputText @bind-Value="LoginString" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label for="@nameof(Password)" class="form-label">Password</label>
+            <InputText type="password" @bind-Value="Password" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" @onclick="DoLogin">Log In</button>
+    </NotAuthorized>
+    <Authorized>Привет, @(context.User.Identity.Name)</Authorized>
+</AuthorizeView>
+
+@code {
+    private string LoginString { get; set; }
+
+    private string Password { get; set; }
+
+    private async void DoLogin()
+    {
+        UserAccount? user = DatabaseContext.UserAccounts.Include(x => x.UserAccountRoles).ThenInclude(x => x.Role).FirstOrDefault(x => x.Login == LoginString);
+
+        bool isAnonymous = user is null || !BCrypt.Net.BCrypt.Verify(Password, user.PasswordHash);
+
+        if (isAnonymous)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Неправильный логин или пароль");
+            return;
+        }
+
+        LoginPermit newLoginPermit = new()
+        {
+            IdUserAccount = user.Id,
+            IsActive = true,
+            CreatedAt = DateTime.Now.ToLocalTime()
+        };
+
+        EntityEntry<LoginPermit> newEntityEntry = DatabaseContext.LoginPermits.Add(newLoginPermit);
+
+        DatabaseContext.SaveChanges();
+
+        NavigationManager.NavigateTo($"/account/login/callback?idLoginPermit={newLoginPermit.Id}", true);
+    }
+}

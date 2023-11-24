@@ -5,3 +5,26 @@
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<AuthorizeView>
+    <NotAuthorized>
+        К сожалению ты не авторизован, так что иди отсюда
+    </NotAuthorized>
+    <Authorized>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Enumerable.Range(1, 20).Select(x => Guid.NewGuid().ToString()))
+                {
+                    <tr>
+                        <td>@item</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Authorized>
+</AuthorizeView>

@@ -1,6 +1,7 @@
 ﻿using Feedback.Server.Helpers;
 using Feedback.Server.ServiceInstallers.Abstraction;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Feedback.Server.ServiceInstallers;
 
@@ -14,6 +15,6 @@ public sealed class AuthenticationAndAuthorizationInstaller : IServiceInstaller
 
         services.AddHttpContextAccessor();
 
-        services.AddSingleton<AuthHelper>();
+        services.AddScoped<AuthenticationStateProvider, RevalidatingFeedbackAuthenticationStateProvider>();
     }
 }
