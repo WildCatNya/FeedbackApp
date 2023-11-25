@@ -13,13 +13,13 @@ public static class DefaultExtension
 
     public static ClaimsPrincipal GetClaimsPrincipal(this UserAccount userAccount, DateTime? localDateTime = null)
     {
-        string expiration = localDateTime.HasValue ? localDateTime.Value.ToString() : DateTime.Now.ToLocalTime().AddHours(3).ToString();
+        DateTime normalizedDateTime = localDateTime ?? DateTime.Now.ToLocalTime().AddHours(3);
 
-        List<Claim> claims =
+        List <Claim> claims =
         [
             new(ClaimTypes.Name, userAccount.Login),
             new(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),
-            new(ClaimTypes.Expiration, expiration)
+            new(ClaimTypes.Expiration, normalizedDateTime.ToString())
         ];
 
         userAccount.UserAccountRoles.Select(x => x.Role?.Name)
