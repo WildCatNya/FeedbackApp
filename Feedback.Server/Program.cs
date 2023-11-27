@@ -1,4 +1,5 @@
 using Feedback.Server.Extensions;
+using MudBlazor.Services;
 using System.Reflection;
 
 namespace Feedback.Server;
@@ -14,6 +15,8 @@ public class Program
         builder.Services.AddServerSideBlazor();
 
         builder.Services.InstallServices(builder.Configuration, Assembly.GetExecutingAssembly());
+
+        builder.Services.AddMudServices();
 
         var app = builder.Build();
 

@@ -1,30 +1,89 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@inject FeedbackContext _context;
 
-<h1>Hello, world!</h1>
+<PageTitle>Создание сообщения</PageTitle>
 
-Welcome to your new app.
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudText Typo="Typo.h6">
+            Если у Вас возник вопрос, сначала просмотрите ответы на 
+            <MudLink Href="https://sites.google.com/view/spupk/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0/%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D1%8B-%D0%BD%D0%B0-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B" Target="_blank">часто возникающие вопросы</MudLink>
+        </MudText>
+        <MudText Typo="Typo.subtitle1">Если Вы не нашли ответ, оставьте вопрос в форме ниже</MudText>
+    </MudItem>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" Model="Contact">
 
-<AuthorizeView>
-    <NotAuthorized>
-        К сожалению ты не авторизован, так что иди отсюда
-    </NotAuthorized>
-    <Authorized>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Enumerable.Range(1, 20).Select(x => Guid.NewGuid().ToString()))
-                {
-                    <tr>
-                        <td>@item</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </Authorized>
-</AuthorizeView>
+                <MudTextField @bind-Value="Contact.LastName" Label="Фамилия" Required="true" RequiredError="Фамилия обязательна" T="string" />
+
+                <MudTextField @bind-Value="Contact.Name" Label="Имя" Required="true" RequiredError="Имя обязательно" T="string" />
+
+                <MudTextField @bind-Value="Contact.MiddleName" Label="Отчество" T="string" />
+
+                <MudSelect @bind-Value="Contact.IdTopic" AnchorOrigin="Origin.BottomCenter" Label="Предмет обращения" Required="true" T="int" Validation="new Func<int, string>(Valid)">
+
+                    <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
+
+                    @foreach (var topic in Topics)
+                    {
+                        <MudSelectItem Value="@topic.Id">@topic.Value</MudSelectItem>
+                    }
+
+                </MudSelect>
+
+                <MudSelect @bind-Value="Contact.IdSubject" AnchorOrigin="Origin.BottomCenter" Label="Тема обращения" Required="true" T="int" Validation="new Func<int, string>(Valid)">
+
+                    <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
+
+                    @foreach (int? number in Enumerable.Range(1, 10))
+                    {
+                        <MudSelectItem Value="@number.Value">Тема @number.Value</MudSelectItem>
+                    }
+
+                </MudSelect>
+
+                <MudTextField @bind-Value="Contact.StudentGroup" HelperText="Для обучающихся" Label="Группа" T="string" />
+
+                <MudTextField @bind-Value="Contact.Telephone" InputType="InputType.Telephone" Label="Телефон" T="string" />
+
+                <MudTextField @bind-Value="Contact.Email" Label="Почта" Required="true" RequiredError="Почта обязательна" T="string" />
+
+                <MudTextField AutoGrow Label="Текст обращения" Required="true" RequiredError="Текст обращения обязателен" T="string" />
+
+                 <div class="d-flex align-center justify-space-between">
+                     <MudCheckBox Label=" Я даю согласие на обработку своих персональных данных" Required="true" RequiredError="Необходимо принять согласие на обработку персональных данных" T="bool" />
+
+                     <MudButton Class="ml-auto" Color="Color.Primary" OnClick="Submit" Variant="Variant.Filled">Отправить</MudButton>
+                 </div>
+             </MudForm>
+         </MudPaper>
+     </MudItem>
+ </MudGrid>
+
+ @code {
+    Contact Contact = new();
+
+    MudForm form;
+
+    private List<Topic> Topics = new()
+    {
+        new() { Id = 1, Value = "Вопрос" },
+        new() { Id = 2, Value = "Жалоба" },
+        new() { Id = 3, Value = "Отзыв" },
+        new() { Id = 4, Value = "Предложение по улучшению" },
+    };
+
+    private void Submit()
+    {
+        if (form.IsValid)
+        {
+            Console.WriteLine("YES");
+        }
+        else
+            form.Validate();
+    }
+
+    private string Valid(int value) => value != 0 ? string.Empty : "Необходимо выбрать!";
+}
