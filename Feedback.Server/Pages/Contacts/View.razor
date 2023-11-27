@@ -1,0 +1,50 @@
+﻿@page "/contacts/view"
+
+@using System.Security.Claims
+
+@inject FeedbackContext _context;
+
+@attribute [Authorize]
+
+@if (Contacts is null)
+{
+    <p>Загрузка...</p>
+}
+else if (!Contacts.Any())
+{
+    <p>Данных нет</p>
+}
+else
+{
+    @foreach (var contact in Contacts)
+    {
+        <p>@(contact.FullName): @(contact.Subject.Role.Name)</p>
+    }
+}
+
+@code {
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private List<Contact>? Contacts = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authenticationState = await AuthenticationStateTask;
+
+        IEnumerable<Claim>? roleClaims = authenticationState.User.Claims.Where(x => x.Type.Contains("role"));
+
+        if (roleClaims.Any())
+        {
+            string[] roles = roleClaims.Select(x => x.Value).ToArray();
+
+            if (roles.Contains("Admin"))
+            {
+                Contacts = await _context.Contacts.ToListAsync();
+            }
+            else
+            {
+                Contacts = await _context.Contacts.Where(contact => roles.Any(role => contact.Subject.Role.Name == role)).ToListAsync();
+            }
+        }
+    }
+}

@@ -18,5 +18,8 @@ public sealed class ContactConfiguration : IEntityTypeConfiguration<Contact>
 
         builder.HasOne(x => x.Subject).WithMany(x => x.Contacts).HasForeignKey(x => x.IdSubject);
         builder.HasOne(x => x.Topic).WithMany(x => x.Contacts).HasForeignKey(x => x.IdTopic);
+
+        builder.Navigation(x => x.Subject).AutoInclude();
+        builder.Navigation(x => x.Topic).AutoInclude();
     }
 }

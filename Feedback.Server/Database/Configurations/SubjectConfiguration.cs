@@ -15,5 +15,7 @@ public sealed class SubjectConfiguration : IEntityTypeConfiguration<Subject>
         builder.Property(x => x.Value).HasMaxLength(100);
 
         builder.HasOne(x => x.Role).WithMany(x => x.Subjects).HasForeignKey(x => x.IdRole);
+
+        builder.Navigation(x => x.Role).AutoInclude();
     }
 }
