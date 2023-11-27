@@ -50,7 +50,7 @@
 
                 <MudTextField @bind-Value="Contact.Email" Label="Почта" Required="true" RequiredError="Почта обязательна" T="string" />
 
-                <MudTextField AutoGrow Label="Текст обращения" Required="true" RequiredError="Текст обращения обязателен" T="string" />
+                <MudTextField @bind-Value="Contact.Message" AutoGrow Label="Текст обращения" Required="true" RequiredError="Текст обращения обязателен" T="string" />
 
                  <div class="d-flex align-center justify-space-between">
                      <MudCheckBox Label=" Я даю согласие на обработку своих персональных данных" Required="true" RequiredError="Необходимо принять согласие на обработку персональных данных" T="bool" />
