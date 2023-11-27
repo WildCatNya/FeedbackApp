@@ -10,25 +10,30 @@
 
 <AuthorizeView>
     <NotAuthorized>
-        <div class="mb-3">
-            <label for="@nameof(LoginString)" class="form-label">Login</label>
-            <InputText @bind-Value="LoginString" class="form-control" />
-        </div>
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudPaper Class="pa-4">
+                    <MudForm @ref="form">
+                        <MudTextField @bind-Value="LoginString" Label="Имя пользователя" Required="true" RequiredError="Это обязательное поле" T="string" />
+                        <MudTextField @bind-Value="Password" InputType="InputType.Password" Label="Пароль" Required="true" RequiredError="Это обязательное поле" T="string" />
 
-        <div class="mb-3">
-            <label for="@nameof(Password)" class="form-label">Password</label>
-            <InputText type="password" @bind-Value="Password" class="form-control" />
-        </div>
-
-        <button type="submit" class="btn btn-primary" @onclick="DoLogin">Log In</button>
+                        <div class="d-flex align-center justify-space-between">
+                            <MudButton Class="ml-auto" Color="Color.Primary" OnClick="Submit" Variant="Variant.Filled">Авторизоваться</MudButton>
+                        </div>
+                    </MudForm>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
     </NotAuthorized>
     <Authorized>Привет, @(context.User.Identity.Name)</Authorized>
 </AuthorizeView>
 
 @code {
-    private string LoginString { get; set; }
+    MudForm form;
 
-    private string Password { get; set; }
+    private string? LoginString { get; set; }
+
+    private string? Password { get; set; }
 
     private async void DoLogin()
     {
@@ -54,5 +59,17 @@
         DatabaseContext.SaveChanges();
 
         NavigationManager.NavigateTo($"/account/login/callback?idLoginPermit={newLoginPermit.Id}", true);
+    }
+
+    private void Submit()
+    { 
+        if (form.IsValid)
+        {
+            Console.WriteLine("YES");
+            DoLogin();
+            return;
+        }
+
+        form.Validate();
     }
 }

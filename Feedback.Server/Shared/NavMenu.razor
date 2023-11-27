@@ -1,3 +1,18 @@
 ﻿<MudNavMenu Class="d-flex flex-grow-1 flex-column">
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    <MudNavLink Href="" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Главная</MudNavLink>
+
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/contacts/view" Icon="@Icons.Material.Filled.ContactPage">Заявки</MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="SuperAdmin,Admin">
+        <Authorized>
+            <MudNavGroup Expanded="true" Icon="@Icons.Material.Filled.SupervisedUserCircle" Title="Пользователи">
+                <MudNavLink Href="/users/view" Icon="@Icons.Material.Filled.PersonSearch">Просмотр</MudNavLink>
+                <MudNavLink Href="/users/registration" Icon="@Icons.Material.Filled.PersonAddAlt1">Регистрация</MudNavLink>
+            </MudNavGroup>
+        </Authorized>
+    </AuthorizeView>
 </MudNavMenu>
