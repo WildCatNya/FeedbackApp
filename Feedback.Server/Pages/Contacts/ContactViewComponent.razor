@@ -1,0 +1,53 @@
+﻿@if (Contact is not null)
+{
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.body1">@Contact.FullName</MudText>
+                    @if (string.IsNullOrWhiteSpace(Contact.StudentGroup))
+                    {
+                        <MudText Typo="Typo.body2">@Contact.StudentGroup</MudText>
+                    }
+            </CardHeaderContent>
+            <CardHeaderActions>
+                @if (Contact.IsCompleted)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Close" />
+                }
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText Typo="Typo.body2">@Contact.Message</MudText>
+        </MudCardContent>
+        <MudCardActions>
+                @if (!Contact.IsCompleted)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.PlaylistAddCheck" />
+                }
+                else
+                {
+                    <AuthorizeView Roles="SuperAdmin">
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.HideSource" />
+                        </Authorized>
+                    </AuthorizeView>
+                }
+
+                <MudSpacer />
+
+                <MudText Typo="Typo.body2">@Contact.Topic.Value</MudText>
+        </MudCardActions>
+    </MudCard>
+}
+else
+{
+    <MudText>Нет данных</MudText>
+}
+
+@code {
+    [Parameter] public Contact? Contact { get; set; }
+}

@@ -16,10 +16,14 @@ else if (!Contacts.Any())
 }
 else
 {
-    @foreach (var contact in Contacts)
-    {
-        <p>@(contact.FullName): @(contact.Subject.Role.Name)</p>
-    }
+    <MudGrid Justify="Justify.FlexStart">
+        @foreach (var contact in Contacts)
+        {
+            <MudItem xs="4">
+                <ContactViewComponent Contact="@contact" />
+            </MudItem>
+        }
+    </MudGrid>
 }
 
 @code {
@@ -37,7 +41,7 @@ else
         {
             string[] roles = roleClaims.Select(x => x.Value).ToArray();
 
-            if (roles.Contains("Admin"))
+            if (roles.Any(role => role.Contains("Admin")))
             {
                 Contacts = await _context.Contacts.ToListAsync();
             }
