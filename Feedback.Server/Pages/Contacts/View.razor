@@ -41,9 +41,15 @@ else
         {
             string[] roles = roleClaims.Select(x => x.Value).ToArray();
 
-            if (roles.Any(role => role.Contains("Admin")))
+            if (roles.Any(role => role.Contains("Admin") || role.Contains("AllGroups")))
             {
-                Contacts = await _context.Contacts.ToListAsync();
+                if (roles.Any(role => role.Contains("SuperAdmin")))
+                {
+                    Contacts = await _context.Contacts.ToListAsync();
+                    return;
+                }
+
+                Contacts = await _context.Contacts.Where(x => !x.Hide).ToListAsync();
             }
             else
             {
