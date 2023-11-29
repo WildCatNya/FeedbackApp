@@ -75,11 +75,11 @@ else
 
             string message = Contact.IsCompleted ? "Заявка завершена" : "Завершение заявки отменено";
             Severity severity = Contact.IsCompleted ? Severity.Success : Severity.Warning;
-            SnackbarAdd(message, severity);
+            _snackbarWrapper.SnackbarAdd(message, severity);
         }
         catch
         {
-            SnackbarAdd("Что-то пошло не так", Severity.Error);
+            _snackbarWrapper.SnackbarAdd("Что-то пошло не так", Severity.Error);
         }
     }
 
@@ -91,16 +91,13 @@ else
             _context.SaveChanges();
 
             string message = Contact.Hide ? "Заявка спрятана" : "Заявка видима";
-            SnackbarAdd(message, Severity.Info);
+            _snackbarWrapper.SnackbarAdd(message, Severity.Info);
         }
         catch
         {
-            SnackbarAdd("Что-то пошло не так", Severity.Error);
+            _snackbarWrapper.SnackbarAdd("Что-то пошло не так", Severity.Error);
         }
     }
-
-    private void SnackbarAdd(string message, Severity severity) =>
-        _snackbarWrapper.SnackbarAdd(message, severity);
 
     private async void ShowContactPageDialog()
     {
