@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Feedback.Server.ServiceInstallers;
 
-public sealed class DatabaseInstaller : IServiceInstaller
+public sealed class DatabaseInstaller : ServiceInstaller
 {
-    public void Install(IServiceCollection services, IConfiguration configuration)
+    public override void Install(IServiceCollection services, IConfiguration configuration)
     {
         string connectionString = configuration.GetConnectionString(FeedbackContext.ConnectionStringName);
 

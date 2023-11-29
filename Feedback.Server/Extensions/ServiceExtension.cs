@@ -9,12 +9,11 @@ public static class ServiceExtension
     {
         var serviceInstallers = assemblies
                 .SelectMany(x => x.DefinedTypes)
-                .Where(IsAssignableFrom<IServiceInstaller>)
+                .Where(IsAssignableFrom<ServiceInstaller>)
                 .Select(Activator.CreateInstance)
-                .Cast<IServiceInstaller>()
-                .ToList();
+                .Cast<ServiceInstaller>();
 
-        serviceInstallers.ForEach(service => service.Install(services, configuration));
+        serviceInstallers.Where(x => x.CanInstall).ForEach(service => service.Install(services, configuration));
 
         return services;
     }

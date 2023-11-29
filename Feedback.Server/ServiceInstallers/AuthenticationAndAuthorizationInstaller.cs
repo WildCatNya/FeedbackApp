@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Feedback.Server.ServiceInstallers;
 
-public sealed class AuthenticationAndAuthorizationInstaller : IServiceInstaller
+public sealed class AuthenticationAndAuthorizationInstaller : ServiceInstaller
 {
-    public void Install(IServiceCollection services, IConfiguration configuration)
+    public override void Install(IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
