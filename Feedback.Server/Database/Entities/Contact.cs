@@ -20,6 +20,8 @@ public sealed class Contact : Entity
 
     public string Telephone { get; set; } = null!;
 
+    public bool HasWhatsApp { get; set; }
+
     public string Email { get; set; } = null!;
 
     public string Message { get; set; } = null!;

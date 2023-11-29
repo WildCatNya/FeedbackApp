@@ -1,9 +1,10 @@
 ﻿<MudDialog>
     <TitleContent>Контакт: @Contact.FullName</TitleContent>
     <DialogContent>
-        <MudText>Телефон: @Contact.Telephone</MudText>
+        <MudBadge Color="Color.Success" Icon="@Icons.Custom.Brands.WhatsApp" Visible="Contact.HasWhatsApp">
+            <MudText>Телефон: @(Contact.Telephone)</MudText>
+        </MudBadge>
         <MudText>Почта: @Contact.Email</MudText>
-        <MudText>Whatsapp: Доделать в форму на главное и в модель</MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Закрыть</MudButton>

@@ -109,6 +109,8 @@ else
     {
         DialogParameters<ContactPageMudDialog> parameters = new() { { x => x.Contact, Contact } };
 
-        IDialogReference? dialog = await _dialog.ShowAsync<ContactPageMudDialog>("Contact Page", parameters);
+        DialogOptions options = new() { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        IDialogReference? dialog = await _dialog.ShowAsync<ContactPageMudDialog>("Contact Page", parameters, options);
     }
 }
