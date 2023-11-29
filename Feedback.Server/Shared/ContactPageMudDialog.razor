@@ -10,7 +10,7 @@
         <MudText>Почта: @Contact.Email</MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Закрыть</MudButton>
+        <MudButton OnClick="() => MudDialog.Cancel()">Закрыть</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -18,6 +18,4 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     [Parameter] public Contact Contact { get; set; }
-
-    private void Cancel() => MudDialog.Cancel();
 }
