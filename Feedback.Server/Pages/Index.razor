@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @inject FeedbackContext _context;
+@inject ISnackbarWrapper _snackbarWrapper;
 
 <PageTitle>Создание сообщения</PageTitle>
 
@@ -37,9 +38,9 @@
 
                     <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
 
-                    @foreach (int? number in Enumerable.Range(1, 10))
+                    @foreach (var subject in Subjects)
                     {
-                        <MudSelectItem Value="@number.Value">Тема @number.Value</MudSelectItem>
+                        <MudSelectItem Value="@subject.Id">@subject.Value</MudSelectItem>
                     }
 
                 </MudSelect>
@@ -48,18 +49,21 @@
 
                 <MudTextField @bind-Value="Contact.Telephone" InputType="InputType.Telephone" Label="Телефон" T="string" />
 
-                <MudCheckBox @bind-Checked="Contact.HasWhatsApp" Label="WhatsApp?" Style="margin-top: 15px;" />
+                @if (!string.IsNullOrWhiteSpace(Contact.Telephone))
+                {
+                    <MudCheckBox @bind-Checked="Contact.HasWhatsApp" Label="WhatsApp?" Style="margin-top: 15px;" />
+                }
 
                 <MudTextField @bind-Value="Contact.Email" Label="Почта" Required="true" RequiredError="Почта обязательна" T="string" />
 
                 <MudTextField @bind-Value="Contact.Message" AutoGrow Label="Текст обращения" Required="true" RequiredError="Текст обращения обязателен" T="string" />
 
                  <MudGrid Justify="Justify.SpaceBetween" Spacing="1 ">
-                     <MudItem Class="d-flex align-center" Style="margin-top: 15px;" xs="12" md="8" lg="6">
+                     <MudItem Class="d-flex align-center" lg="6" md="8" Style="margin-top: 15px;" xs="12">
                          <MudCheckBox Label=" Я даю согласие на обработку своих персональных данных" Required="true" RequiredError="@string.Empty" T="bool" />
                      </MudItem>
-                     <MudItem Class="d-flex align-center" Style="margin-top: 5px; justify-content:end" xs="12" md="6" lg="4">
-                         <MudButton Color="Color.Primary" OnClick="Submit" Variant="Variant.Filled">Отправить</MudButton>
+                     <MudItem Class="d-flex align-center" lg="4" md="6" Style="margin-top: 5px; justify-content:end" xs="12">
+                         <MudButton Color="Color.Primary" OnClick="async () => await Submit()" Variant="Variant.Filled">Отправить</MudButton>
                      </MudItem>
                  </MudGrid>
              </MudForm>
@@ -72,22 +76,34 @@
 
     MudForm form;
 
-    private List<Topic> Topics = new()
-    {
-        new() { Id = 1, Value = "Вопрос" },
-        new() { Id = 2, Value = "Жалоба" },
-        new() { Id = 3, Value = "Отзыв" },
-        new() { Id = 4, Value = "Предложение по улучшению" },
-    };
+    private List<Subject> Subjects = new();
+    private List<Topic> Topics = new();
 
-    private void Submit()
+    protected override async Task OnInitializedAsync()
     {
-        if (form.IsValid)
+        Subjects = await _context.Subjects.ToListAsync();
+        Topics = await _context.Topics.ToListAsync();
+    }
+
+    private async Task Submit()
+    {
+        if (!form.IsValid)
         {
-            Console.WriteLine("YES");
+            await form.Validate();
+            return;
         }
-        else
-            form.Validate();
+
+        try
+        {
+            _context.Contacts.Add(Contact);
+            await _context.SaveChangesAsync();
+            _snackbarWrapper.SnackbarAdd("Сообщение успешно отправлено", Severity.Success);
+            Contact = new();
+        }
+        catch
+        {
+            _snackbarWrapper.SnackbarAdd("Что-то пошло не так", Severity.Error);
+        }
     }
 
     private string Valid(int value) => value != 0 ? string.Empty : "Необходимо выбрать!";

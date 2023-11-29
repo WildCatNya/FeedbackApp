@@ -1,6 +1,6 @@
 ﻿@inject FeedbackContext _context;
 @inject IDialogService _dialog
-@inject ISnackbar _snackbar
+@inject ISnackbarWrapper _snackbarWrapper;
 
 @if (Contact is not null)
 {
@@ -14,7 +14,7 @@
                     }
                     else
                     {
-                        <MudText Typo="Typo.subtitle2" Color="Color.Transparent">.</MudText>
+                        <MudText Color="Color.Transparent" Typo="Typo.subtitle2">.</MudText>
                     }
             </CardHeaderContent>
             <CardHeaderActions>
@@ -99,11 +99,8 @@ else
         }
     }
 
-    private void SnackbarAdd(string message, Severity severity, string positionClass = Defaults.Classes.Position.BottomLeft)
-    {
-        _snackbar.Configuration.PositionClass = positionClass;
-        _snackbar.Add(message, severity, configure: config => config.DuplicatesBehavior = SnackbarDuplicatesBehavior.Allow);
-    }
+    private void SnackbarAdd(string message, Severity severity) =>
+        _snackbarWrapper.SnackbarAdd(message, severity);
 
     private async void ShowContactPageDialog()
     {

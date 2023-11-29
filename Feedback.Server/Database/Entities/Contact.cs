@@ -12,13 +12,13 @@ public sealed class Contact : Entity
 
     public string Name { get; set; } = null!;
 
-    public string MiddleName { get; set; } = null!;
+    public string? MiddleName { get; set; } = null!;
 
     public string FullName => $"{LastName} {Name} {MiddleName}";
 
     public string? StudentGroup { get; set; } = null!;
 
-    public string Telephone { get; set; } = null!;
+    public string? Telephone { get; set; } = null!;
 
     public bool HasWhatsApp { get; set; }
 

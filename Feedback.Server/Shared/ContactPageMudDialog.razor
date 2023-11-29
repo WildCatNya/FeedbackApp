@@ -1,9 +1,12 @@
 ﻿<MudDialog>
     <TitleContent>Контакт: @Contact.FullName</TitleContent>
     <DialogContent>
-        <MudBadge Color="Color.Success" Icon="@Icons.Custom.Brands.WhatsApp" Visible="Contact.HasWhatsApp">
-            <MudText>Телефон: @(Contact.Telephone)</MudText>
-        </MudBadge>
+        @if (!string.IsNullOrWhiteSpace(Contact.Telephone))
+        {
+            <MudBadge Color="Color.Success" Icon="@Icons.Custom.Brands.WhatsApp" Visible="Contact.HasWhatsApp">
+                <MudText>Телефон: @(Contact.Telephone)</MudText>
+            </MudBadge>
+        }
         <MudText>Почта: @Contact.Email</MudText>
     </DialogContent>
     <DialogActions>
