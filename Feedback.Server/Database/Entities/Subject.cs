@@ -8,6 +8,8 @@ public sealed class Subject : Entity
 
     public string Value { get; set; } = null!;
 
+    public string ShortValue { get; set; } = null!;
+
     public bool Hide { get; set; } = false;
 
     public Role? Role { get; set; }

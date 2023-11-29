@@ -16,14 +16,35 @@ else if (!Contacts.Any())
 }
 else
 {
-    <MudGrid Justify="Justify.FlexStart">
-        @foreach (var contact in Contacts)
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        @foreach (var subjectGroup in Contacts.GroupBy(x => x.Subject.ShortValue))
         {
-            <MudItem xs="12" md="6" lg="4">
-                <ContactViewComponent Contact="@contact" />
-            </MudItem>
+            int count = @subjectGroup.Count(x => !x.IsCompleted);
+
+            <MudTabPanel Text="@subjectGroup.Key">
+                <TabContent>
+                    @if (count != 0)
+                    {
+                        <MudBadge Color="Color.Primary" Content="@subjectGroup.Count(x => !x.IsCompleted)" Overlap="true" Bordered="true">@subjectGroup.Key</MudBadge>
+                    }
+                    else
+                    {
+                        <MudText>@subjectGroup.Key</MudText>
+                    }
+                </TabContent>
+                <ChildContent>
+                    <MudGrid Justify="Justify.FlexStart">
+                        @foreach (var contact in subjectGroup)
+                        {
+                            <MudItem xs="12" md="6" lg="4">
+                                <ContactViewComponent Contact="@contact" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </ChildContent>
+            </MudTabPanel>
         }
-    </MudGrid>
+    </MudTabs>
 }
 
 @code {
