@@ -1,0 +1,114 @@
+﻿@inject FeedbackContext _context;
+@inject IDialogService _dialog
+@inject ISnackbar _snackbar
+
+@if (Contact is not null)
+{
+    <MudCard Elevation="25">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.body1">@Contact.FullName</MudText>
+                    @if (!string.IsNullOrWhiteSpace(Contact.StudentGroup))
+                    {
+                        <MudText Typo="Typo.subtitle2">@Contact.StudentGroup</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.subtitle2" Color="Color.Transparent">.</MudText>
+                    }
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIcon Icon="@CompletionHeaderIconPath" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent Style="height: 200px;">
+            <MudContainer Style="max-height: 150px; overflow-y: scroll;">
+                <MudText Typo="Typo.body2">@Contact.Message</MudText>
+                </MudContainer>
+        </MudCardContent>
+        <MudCardActions>
+                @if (!Contact.IsCompleted)
+                {
+                    <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" />
+                }
+                else
+                {
+                    <AuthorizeView Roles="SuperAdmin">
+                        <Authorized>
+                            <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" />
+                        </Authorized>
+                    </AuthorizeView>
+                }
+            <AuthorizeView Roles="SuperAdmin">
+                <Authorized>
+                    <MudIconButton Icon="@HideIconPath" OnClick="ChangeHideState" />
+                </Authorized>
+            </AuthorizeView>
+            <MudIconButton Icon="@Icons.Material.Filled.ContactPage" OnClick="ShowContactPageDialog" />
+
+            <MudSpacer />
+
+                <MudText Typo="Typo.body2">@Contact.Topic?.Value</MudText>
+            </MudCardActions>
+    </MudCard>
+}
+else
+{
+    <MudText>Нет данных</MudText>
+}
+
+@code {
+    [Parameter] public Contact Contact { get; set; }
+
+    public string CompletionHeaderIconPath => Contact.IsCompleted ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Close;
+
+    public string CompletionIconPath => Contact.IsCompleted ? Icons.Material.Filled.PlaylistRemove : Icons.Material.Filled.PlaylistAddCheck;
+
+    public string HideIconPath => Contact.Hide ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility;
+
+    private void ChangeCompletionState()
+    {
+        try
+        {
+            Contact.IsCompleted = !Contact.IsCompleted;
+            _context.SaveChanges();
+
+            string message = Contact.IsCompleted ? "Заявка завершена" : "Завершение заявки отменено";
+            Severity severity = Contact.IsCompleted ? Severity.Success : Severity.Warning;
+            SnackbarAdd(message, severity);
+        }
+        catch
+        {
+            SnackbarAdd("Что-то пошло не так", Severity.Error);
+        }
+    }
+
+    private void ChangeHideState()
+    {
+        try
+        {
+            Contact.Hide = !Contact.Hide;
+            _context.SaveChanges();
+
+            string message = Contact.Hide ? "Заявка спрятана" : "Заявка видима";
+            SnackbarAdd(message, Severity.Info);
+        }
+        catch
+        {
+            SnackbarAdd("Что-то пошло не так", Severity.Error);
+        }
+    }
+
+    private void SnackbarAdd(string message, Severity severity, string positionClass = Defaults.Classes.Position.BottomLeft)
+    {
+        _snackbar.Configuration.PositionClass = positionClass;
+        _snackbar.Add(message, severity, configure: config => config.DuplicatesBehavior = SnackbarDuplicatesBehavior.Allow);
+    }
+
+    private async void ShowContactPageDialog()
+    {
+        DialogParameters<ContactPageMudDialog> parameters = new() { { x => x.Contact, Contact } };
+
+        IDialogReference? dialog = await _dialog.ShowAsync<ContactPageMudDialog>("Contact Page", parameters);
+    }
+}

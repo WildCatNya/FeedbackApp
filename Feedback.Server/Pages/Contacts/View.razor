@@ -19,7 +19,7 @@ else
     <MudGrid Justify="Justify.FlexStart">
         @foreach (var contact in Contacts)
         {
-            <MudItem xs="4">
+            <MudItem xs="12" md="6" lg="4">
                 <ContactViewComponent Contact="@contact" />
             </MudItem>
         }
@@ -47,7 +47,7 @@ else
             }
             else
             {
-                Contacts = await _context.Contacts.Where(contact => roles.Any(role => contact.Subject.Role.Name == role)).ToListAsync();
+                Contacts = await _context.Contacts.Where(contact => roles.Any(role => contact.Subject.Role.Name == role)).Where(x => !x.Hide).ToListAsync();
             }
         }
     }

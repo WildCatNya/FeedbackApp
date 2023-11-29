@@ -1,0 +1,19 @@
+﻿<MudDialog>
+    <TitleContent>Контакт: @Contact.FullName</TitleContent>
+    <DialogContent>
+        <MudText>Телефон: @Contact.Telephone</MudText>
+        <MudText>Почта: @Contact.Email</MudText>
+        <MudText>Whatsapp: Доделать в форму на главное и в модель</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Закрыть</MudButton>
+    </DialogActions>
+</MudDialog>
+
+    @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Contact Contact { get; set; }
+
+    private void Cancel() => MudDialog.Cancel();
+}
