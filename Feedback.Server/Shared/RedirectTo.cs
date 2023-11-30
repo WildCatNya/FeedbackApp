@@ -2,10 +2,12 @@
 
 namespace Feedback.Server.Shared;
 
-public sealed class RedirectToLogin : ComponentBase
+public sealed class RedirectTo : ComponentBase
 {
+    [Parameter] public string? RedirectUrl { get; set; }
+
     [Inject] private NavigationManager _navigationManager { get; set; }        
 
     protected override void OnAfterRender(bool firstRender) =>
-        _navigationManager.NavigateTo("/account/login", true);
+        _navigationManager.NavigateTo(RedirectUrl ?? "/", true);
 }

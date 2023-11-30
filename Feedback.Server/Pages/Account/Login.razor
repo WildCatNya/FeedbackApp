@@ -25,7 +25,9 @@
             </MudItem>
         </MudGrid>
     </NotAuthorized>
-    <Authorized>Привет, @(context.User.Identity.Name)</Authorized>
+    <Authorized>
+        <RedirectTo RedirectUrl="/contacts/view" />
+    </Authorized>
 </AuthorizeView>
 
 @code {
