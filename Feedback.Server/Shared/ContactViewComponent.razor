@@ -60,13 +60,15 @@ else
 @code {
     [Parameter] public Contact Contact { get; set; }
 
+    [Parameter] public EventCallback CompletionStateEventCallback { get; set; }
+
     public string CompletionHeaderIconPath => Contact.IsCompleted ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Close;
 
     public string CompletionIconPath => Contact.IsCompleted ? Icons.Material.Filled.PlaylistRemove : Icons.Material.Filled.PlaylistAddCheck;
 
     public string HideIconPath => Contact.Hide ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility;
 
-    private void ChangeCompletionState()
+    private async void ChangeCompletionState()
     {
         try
         {
@@ -76,6 +78,8 @@ else
             string message = Contact.IsCompleted ? "Заявка завершена" : "Завершение заявки отменено";
             Severity severity = Contact.IsCompleted ? Severity.Success : Severity.Warning;
             _snackbarWrapper.SnackbarAdd(message, severity);
+
+            await CompletionStateEventCallback.InvokeAsync();
         }
         catch
         {

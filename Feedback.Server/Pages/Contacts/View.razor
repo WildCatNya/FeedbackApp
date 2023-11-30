@@ -16,28 +16,22 @@ else if (!Contacts.Any())
 }
 else
 {
-    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabs ApplyEffectsToContainer="true" Elevation="2" PanelClass="pa-6" Rounded="true">
         @foreach (var subjectGroup in Contacts.GroupBy(x => x.Subject.ShortValue))
         {
-            int count = @subjectGroup.Count(x => !x.IsCompleted);
-
-            <MudTabPanel Text="@subjectGroup.Key">
+            <MudTabPanel>
                 <TabContent>
-                    @if (count != 0)
-                    {
-                        <MudBadge Color="Color.Primary" Content="@subjectGroup.Count(x => !x.IsCompleted)" Overlap="true" Bordered="true">@subjectGroup.Key</MudBadge>
+                    @{
+                        int count = subjectGroup.Count(x => !x.IsCompleted);
                     }
-                    else
-                    {
-                        <MudText>@subjectGroup.Key</MudText>
-                    }
-                </TabContent>
-                <ChildContent>
-                    <MudGrid Justify="Justify.FlexStart">
-                        @foreach (var contact in subjectGroup)
+                    <MudBadge Bordered="true" Color="Color.Primary" Content="@count" Overlap="true" Visible="@(count != 0)">@subjectGroup.Key</MudBadge>
+                    </TabContent>
+                    <ChildContent>
+                        <MudGrid Justify="Justify.FlexStart">
+                            @foreach (var contact in subjectGroup)
                         {
                             <MudItem xs="12" md="6" lg="4">
-                                <ContactViewComponent Contact="@contact" />
+                                <ContactViewComponent Contact="@contact" CompletionStateEventCallback="CompletionStateEventCallbackHandler" />
                             </MudItem>
                         }
                     </MudGrid>
@@ -78,4 +72,6 @@ else
             }
         }
     }
+
+    private void CompletionStateEventCallbackHandler() => StateHasChanged();
 }
