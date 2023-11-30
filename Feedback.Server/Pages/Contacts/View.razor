@@ -56,9 +56,9 @@ else
         {
             string[] roles = roleClaims.Select(x => x.Value).ToArray();
 
-            if (roles.Any(role => role.Contains("Admin") || role.Contains("AllGroups")))
+            if (RoleCheck(roles, RolesNames.Creator, RolesNames.Admin, RolesNames.AllSeeing))
             {
-                if (roles.Any(role => role.Contains("SuperAdmin")))
+                if (RoleCheck(roles, RolesNames.Creator, RolesNames.CanConceal))
                 {
                     Contacts = await _context.Contacts.ToListAsync();
                     return;
@@ -72,6 +72,9 @@ else
             }
         }
     }
+
+    private bool RoleCheck(string[] currentRoles, params string[] roles) =>
+        currentRoles.Any(currentRole => roles.Any(role => currentRole == role));
 
     private void CompletionStateEventCallbackHandler() => StateHasChanged();
 }

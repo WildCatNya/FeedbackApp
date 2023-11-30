@@ -7,7 +7,7 @@
         </Authorized>
     </AuthorizeView>
 
-    <AuthorizeView Roles="SuperAdmin,Admin">
+    <AuthorizeView Roles="@RolesNames.Creator">
         <Authorized>
             <MudNavGroup Expanded="true" Icon="@Icons.Material.Filled.SupervisedUserCircle" Title="Пользователи">
                 <MudNavLink Href="/users/view" Icon="@Icons.Material.Filled.PersonSearch">Просмотр</MudNavLink>

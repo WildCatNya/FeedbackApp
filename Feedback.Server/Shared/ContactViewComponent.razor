@@ -33,13 +33,13 @@
                 }
                 else
                 {
-                    <AuthorizeView Roles="SuperAdmin">
+                    <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.Admin},{RolesNames.CanCancel}")">
                         <Authorized>
                             <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
                         </Authorized>
                     </AuthorizeView>
                 }
-            <AuthorizeView Roles="SuperAdmin">
+            <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.CanConceal}")">
                 <Authorized>
                     <MudIconButton Icon="@HideIconPath" OnClick="ChangeHideState" Title="@HideTitle" />
                 </Authorized>
