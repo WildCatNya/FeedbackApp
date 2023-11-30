@@ -83,7 +83,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Subjects = await _context.Subjects.ToListAsync();
+        Subjects = await _context.Subjects.Where(x => !x.Hide).OrderByDescending(x => x.Priority).ThenBy(x => x.ShortValue).ToListAsync();
         Topics = await _context.Topics.ToListAsync();
     }
 

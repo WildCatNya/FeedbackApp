@@ -10,6 +10,11 @@ public sealed class Subject : Entity
 
     public string ShortValue { get; set; } = null!;
 
+    /// <summary>
+    /// Приоритет сортировки
+    /// </summary>
+    public int Priority { get; set; }
+
     public bool Hide { get; set; } = false;
 
     public Role? Role { get; set; }
