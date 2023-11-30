@@ -1,5 +1,7 @@
 ﻿@page "/"
 
+@using System.ComponentModel.DataAnnotations
+
 @inject FeedbackContext _context;
 @inject ISnackbarWrapper _snackbarWrapper;
 
@@ -51,10 +53,10 @@
 
                 @if (!string.IsNullOrWhiteSpace(Contact.Telephone))
                 {
-                    <MudCheckBox @bind-Checked="Contact.HasWhatsApp" Label="WhatsApp?" Style="margin-top: 15px;" />
+                    <MudCheckBox @bind-Checked="Contact.HasWhatsApp" Disabled="string.IsNullOrWhiteSpace(Contact.Telephone)" Label="WhatsApp?" Style="margin-top: 15px;" />
                 }
 
-                <MudTextField @bind-Value="Contact.Email" Label="Почта" Required="true" RequiredError="Почта обязательна" T="string" />
+                <MudTextField @bind-Value="Contact.Email" Label="Почта" Required="true" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid"} )" RequiredError="Почта обязательна" T="string" />
 
                 <MudTextField @bind-Value="Contact.Message" AutoGrow Label="Текст обращения" Required="true" RequiredError="Текст обращения обязателен" T="string" />
 
@@ -95,6 +97,7 @@
 
         try
         {
+            Contact.CreationTime = DateTime.Now.ToLocalTime();
             _context.Contacts.Add(Contact);
             await _context.SaveChangesAsync();
             _snackbarWrapper.SnackbarAdd("Сообщение успешно отправлено", Severity.Success);

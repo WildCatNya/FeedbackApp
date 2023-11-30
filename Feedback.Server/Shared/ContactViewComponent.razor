@@ -29,26 +29,27 @@
         <MudCardActions>
                 @if (!Contact.IsCompleted)
                 {
-                    <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" />
+                    <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
                 }
                 else
                 {
                     <AuthorizeView Roles="SuperAdmin">
                         <Authorized>
-                            <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" />
+                            <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
                         </Authorized>
                     </AuthorizeView>
                 }
             <AuthorizeView Roles="SuperAdmin">
                 <Authorized>
-                    <MudIconButton Icon="@HideIconPath" OnClick="ChangeHideState" />
+                    <MudIconButton Icon="@HideIconPath" OnClick="ChangeHideState" Title="@HideTitle" />
                 </Authorized>
             </AuthorizeView>
-            <MudIconButton Icon="@Icons.Material.Filled.ContactPage" OnClick="ShowContactPageDialog" />
+
+            <MudIconButton Icon="@Icons.Material.Filled.ContactPage" OnClick="ShowContactPageDialog" Title="Открыть контактную информацию" />
 
             <MudSpacer />
 
-                <MudText Typo="Typo.body2">@Contact.Topic?.Value</MudText>
+                <MudText Typo="Typo.body2" Color="Enum.Parse<Color>(Contact.Topic.Color)">@Contact.Topic?.Value</MudText>
             </MudCardActions>
     </MudCard>
 }
@@ -62,11 +63,15 @@ else
 
     [Parameter] public EventCallback CompletionStateEventCallback { get; set; }
 
-    public string CompletionHeaderIconPath => Contact.IsCompleted ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Close;
+    private string CompletionHeaderIconPath => Contact.IsCompleted ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Close;
 
-    public string CompletionIconPath => Contact.IsCompleted ? Icons.Material.Filled.PlaylistRemove : Icons.Material.Filled.PlaylistAddCheck;
+    private string CompletionIconPath => Contact.IsCompleted ? Icons.Material.Filled.PlaylistRemove : Icons.Material.Filled.PlaylistAddCheck;
 
-    public string HideIconPath => Contact.Hide ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility;
+    private string HideIconPath => Contact.Hide ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility;
+
+    private string CompletionTitle => Contact.IsCompleted ? "Отменить завершение заявки" : "Завершить заявку";
+
+    private string HideTitle => Contact.Hide ? "Показать заявку" : "Скрыть заявку";
 
     private async void ChangeCompletionState()
     {
