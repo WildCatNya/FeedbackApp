@@ -11,12 +11,13 @@
                     @if (!string.IsNullOrWhiteSpace(Contact.StudentGroup))
                     {
                         <MudText Typo="Typo.subtitle2">@Contact.StudentGroup</MudText>
+                        <MudText Typo="Typo.subtitle2">@Contact.CreationTime</MudText>
                     }
                     else
                     {
+                        <MudText Typo="Typo.subtitle2">@Contact.CreationTime</MudText>
                         <MudText Color="Color.Transparent" Typo="Typo.subtitle2">.</MudText>
                     }
-                <MudText Typo="Typo.subtitle2">@Contact.CreationTime</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudIcon Icon="@CompletionHeaderIconPath" />
