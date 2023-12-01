@@ -1,0 +1,31 @@
+﻿@foreach (var sortOption in Enum.GetValues<SortCompleteOption>())
+{
+    <MudButton OnClick="() => SortInit(sortOption)">@sortOption</MudButton>
+}
+
+@code {
+    [Parameter] public List<Contact> Contacts { get; set; } = [];
+
+    [Parameter] public EventCallback<List<Contact>> SortCallback { get; set; }
+
+    private async void SortInit(SortCompleteOption option)
+    {
+        switch (option)
+        {
+            case SortCompleteOption.All:
+                await SortCallback.InvokeAsync(Contacts);
+                break;
+            case SortCompleteOption.Completed:
+                await SortCallback.InvokeAsync(Contacts.Where(x => x.IsCompleted).ToList());
+                break;
+            case SortCompleteOption.Uncompleted:
+                await SortCallback.InvokeAsync(Contacts.Where(x => !x.IsCompleted).ToList());
+                break;
+        }       
+    }
+
+    private enum SortCompleteOption
+    {
+        All, Completed, Uncompleted
+    }
+}

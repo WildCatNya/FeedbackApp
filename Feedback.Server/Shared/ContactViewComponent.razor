@@ -16,6 +16,7 @@
                     {
                         <MudText Color="Color.Transparent" Typo="Typo.subtitle2">.</MudText>
                     }
+                <MudText Typo="Typo.subtitle2">@Contact.CreationTime</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
                 <MudIcon Icon="@CompletionHeaderIconPath" />
@@ -61,7 +62,7 @@ else
 @code {
     [Parameter] public Contact Contact { get; set; }
 
-    [Parameter] public EventCallback CompletionStateEventCallback { get; set; }
+    [Parameter] public EventCallback StateChangeEventCallback { get; set; }
 
     private string CompletionHeaderIconPath => Contact.IsCompleted ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Close;
 
@@ -84,7 +85,7 @@ else
             Severity severity = Contact.IsCompleted ? Severity.Success : Severity.Warning;
             _snackbarWrapper.SnackbarAdd(message, severity);
 
-            await CompletionStateEventCallback.InvokeAsync();
+            await StateChangeEventCallback.InvokeAsync();
         }
         catch
         {

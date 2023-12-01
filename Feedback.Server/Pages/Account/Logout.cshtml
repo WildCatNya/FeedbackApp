@@ -1,6 +1,9 @@
 ﻿@page "/account/logout"
 
+@attribute [Authorize]
+
 @using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authorization
 
 @functions {
     public async Task<ActionResult> OnGetAsync()
