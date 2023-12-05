@@ -1,4 +1,5 @@
 ﻿using Feedback.Server.Database.Entities;
+using Feedback.Server.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,5 +12,7 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.ToTable(nameof(Role));
 
         builder.HasKey(x => x.Id);
+
+        builder.HasData(CsvToEntity.GetEntitiesFromCsv<Role>(@"C:\FeedbackDev_table_Role.csv"));
     }
 }

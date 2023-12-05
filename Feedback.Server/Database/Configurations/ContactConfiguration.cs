@@ -1,4 +1,5 @@
 ﻿using Feedback.Server.Database.Entities;
+using Feedback.Server.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,5 +22,7 @@ public sealed class ContactConfiguration : IEntityTypeConfiguration<Contact>
 
         builder.Navigation(x => x.Subject).AutoInclude();
         builder.Navigation(x => x.Topic).AutoInclude();
+
+        builder.HasData(CsvToEntity.GetEntitiesFromCsv<Contact>(@"C:\FeedbackDev_table_Contact.csv"));
     }
 }

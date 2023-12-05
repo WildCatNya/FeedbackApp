@@ -1,4 +1,5 @@
 ﻿using Feedback.Server.Database.Entities;
+using Feedback.Server.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,5 +14,7 @@ public sealed class LoginPermitConfiguration : IEntityTypeConfiguration<LoginPer
         builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.UserAccount).WithMany(x => x.LoginPermits).HasForeignKey(x => x.IdUserAccount);
+
+        builder.HasData(CsvToEntity.GetEntitiesFromCsv<LoginPermit>(@"C:\FeedbackDev_table_LoginPermit.csv"));
     }
 }

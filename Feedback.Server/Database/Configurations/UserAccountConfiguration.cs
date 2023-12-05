@@ -1,4 +1,5 @@
 ﻿using Feedback.Server.Database.Entities;
+using Feedback.Server.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,5 +14,7 @@ public sealed class UserAccountConfiguration : IEntityTypeConfiguration<UserAcco
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.DepartmentEmail).HasMaxLength(150);
+
+        builder.HasData(CsvToEntity.GetEntitiesFromCsv<UserAccount>(@"C:\FeedbackDev_table_UserAccount.csv"));
     }
 }

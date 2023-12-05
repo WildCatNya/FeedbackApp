@@ -1,4 +1,5 @@
 ﻿using Feedback.Server.Database.Entities;
+using Feedback.Server.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,5 +15,7 @@ public sealed class UserAccountRoleConfiguration : IEntityTypeConfiguration<User
 
         builder.HasOne(x => x.Role).WithMany(x => x.UserAccountRoles).HasForeignKey(x => x.IdRole);
         builder.HasOne(x => x.UserAccount).WithMany(x => x.UserAccountRoles).HasForeignKey(x => x.IdUserAccount);
+
+        builder.HasData(CsvToEntity.GetEntitiesFromCsv<UserAccountRole>(@"C:\FeedbackDev_table_UserAccountRole.csv"));
     }
 }
