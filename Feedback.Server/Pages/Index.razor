@@ -3,7 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 
 @inject FeedbackContext _context;
-@inject ISnackbarWrapper _snackbarWrapper;
+@inject ISnackbar _snackbar;
 
 <PageTitle>Создание сообщения</PageTitle>
 
@@ -100,12 +100,12 @@
             Contact.CreationTime = DateTime.Now.ToLocalTime();
             _context.Contacts.Add(Contact);
             await _context.SaveChangesAsync();
-            _snackbarWrapper.SnackbarAdd("Сообщение успешно отправлено", Severity.Success);
+            _snackbar.Add("Сообщение успешно отправлено", Severity.Success);
             Contact = new();
         }
         catch
         {
-            _snackbarWrapper.SnackbarAdd("Что-то пошло не так", Severity.Error);
+            _snackbar.Add("Что-то пошло не так", Severity.Error);
         }
     }
 

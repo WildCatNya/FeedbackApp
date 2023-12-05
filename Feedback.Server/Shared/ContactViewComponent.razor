@@ -1,6 +1,6 @@
 ﻿@inject FeedbackContext _context;
 @inject IDialogService _dialog
-@inject ISnackbarWrapper _snackbarWrapper;
+@inject ISnackbar _snackbar;
 
 @if (Contact is not null)
 {
@@ -84,13 +84,13 @@ else
 
             string message = Contact.IsCompleted ? "Заявка завершена" : "Завершение заявки отменено";
             Severity severity = Contact.IsCompleted ? Severity.Success : Severity.Warning;
-            _snackbarWrapper.SnackbarAdd(message, severity);
+            _snackbar.Add(message, severity);
 
             await StateChangeEventCallback.InvokeAsync();
         }
         catch
         {
-            _snackbarWrapper.SnackbarAdd("Что-то пошло не так", Severity.Error);
+            _snackbar.Add("Что-то пошло не так", Severity.Error);
         }
     }
 
@@ -102,11 +102,11 @@ else
             _context.SaveChanges();
 
             string message = Contact.Hide ? "Заявка спрятана" : "Заявка видима";
-            _snackbarWrapper.SnackbarAdd(message, Severity.Info);
+            _snackbar.Add(message, Severity.Info);
         }
         catch
         {
-            _snackbarWrapper.SnackbarAdd("Что-то пошло не так", Severity.Error);
+            _snackbar.Add("Что-то пошло не так", Severity.Error);
         }
     }
 
