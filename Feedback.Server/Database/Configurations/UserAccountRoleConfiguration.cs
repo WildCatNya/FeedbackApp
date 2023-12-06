@@ -16,6 +16,8 @@ public sealed class UserAccountRoleConfiguration : IEntityTypeConfiguration<User
         builder.HasOne(x => x.Role).WithMany(x => x.UserAccountRoles).HasForeignKey(x => x.IdRole);
         builder.HasOne(x => x.UserAccount).WithMany(x => x.UserAccountRoles).HasForeignKey(x => x.IdUserAccount);
 
+        builder.Navigation(x => x.Role).AutoInclude();
+
         builder.HasData(CsvToEntity.GetEntitiesFromCsv<UserAccountRole>(@"C:\FeedbackDev_table_UserAccountRole.csv"));
     }
 }

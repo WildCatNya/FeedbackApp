@@ -31,9 +31,4 @@ public static class RolesNames
     /// Может удалять заявки
     /// </summary>
     public const string CanDelete = "CanDelete";
-
-    /// <summary>
-    /// Может производить любые манипуляции с пользователем
-    /// </summary>
-    public const string UserFullAccess = "UserFullAccess";
 }

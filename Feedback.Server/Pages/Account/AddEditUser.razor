@@ -1,0 +1,143 @@
+﻿@page "/users/registration"
+@page "/users/edit/{UserAccountId:int}"
+
+@attribute [Authorize(Roles = $"{RolesNames.Creator},{RolesNames.Admin}")]
+
+@inject FeedbackContext _context
+@inject NavigationManager _navigationManager
+@inject ISnackbar _snackbar
+
+@if (UserAccount is not null)
+{
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-4">
+                <MudForm Model="UserAccount">
+                    <MudTextField @bind-Value="UserAccount.Login" Label="Логин" Required="true" RequiredError="Это поле не должно быть пустым" T="string"></MudTextField>
+
+                    <MudTextField @bind-Value="Password" Label="@PasswordLabel" InputType="InputType.Password" HelperText="Пароль хранится в зашифрованном виде" Required="@(UserAccountId == 0)" RequiredError="Это поле не должно быть пустым" T="string"></MudTextField>
+
+                    <MudTextField @bind-Value="UserAccount.DepartmentEmail" Label="Почта" Required="true" RequiredError="Это поле не должно быть пустым" T="string"></MudTextField>
+
+                    <MudButton Color="Color.Primary" OnClick="@(() => _navigationManager.NavigateTo("/users"))">Назад</MudButton>
+
+                    <MudButton Color="Color.Primary" OnClick="async () => await Submit()" Variant="Variant.Filled">Сохранить</MudButton>
+
+                    @foreach (var role in Roles)
+                    {
+                        <MudSwitch @bind-Checked="role.IsActive" Label="@($"{role.Name} ({role.Description})")" />
+                    }
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <MudText>Не найдено</MudText>
+}
+
+@code {
+    [Parameter] public int UserAccountId { get; set; }
+
+    private bool IsNewUser => UserAccountId == 0;
+
+    private string PasswordLabel => IsNewUser ? "Пароль" : "Новый пароль";
+
+    private UserAccount? UserAccount;
+
+    private List<RoleInput> Roles = [];
+
+    private string? Password;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        UserAccount = IsNewUser ? new() : await _context.UserAccounts.FindAsync(UserAccountId);
+
+        var roles = await _context.Roles.Where(x => x.Name != RolesNames.Creator).ToListAsync();
+
+        var currentRoles = UserAccount?.UserAccountRoles.Select(x => x.Role?.Name).ToArray();
+
+        Roles = roles.Select(role => RoleInput.Create(role, currentRoles)).ToList();
+    }
+
+    private async Task Submit()
+    {
+        if (!string.IsNullOrWhiteSpace(Password))
+        {
+            UserAccount.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Password);
+        }
+
+        if (IsNewUser)
+        {
+            if (await _context.UserAccounts.AnyAsync(x => x.Login.ToLower() == UserAccount.Login.ToLower()))
+            {
+                _snackbar.Add("Пользователь с таким логином уже есть", Severity.Error);
+                return;
+            }
+
+            await _context.AddAsync(UserAccount);
+        }
+        else
+        {
+            _context.Entry(UserAccount).State = EntityState.Modified;
+        }
+
+        try
+        {
+            await _context.SaveChangesAsync();
+            
+            @if (!IsNewUser)
+                UserAccount.UserAccountRoles.Clear();
+
+            foreach (var role in Roles.Where(x => x.IsActive))
+            {
+                UserAccount.UserAccountRoles.Add(new()
+                {
+                    IdUserAccount = UserAccount.Id,
+                    IdRole = role.ToRoleEntity(_context).Id
+                });
+            }
+
+            await _context.SaveChangesAsync();
+
+            _snackbar.Add("Пользователь успешно зарегестрирован", Severity.Success);
+            UserAccount = new();
+            Password = string.Empty;
+        }
+        catch
+        {
+            _snackbar.Add("Что-то пошло не так", Severity.Error);
+        }
+    }
+
+    private class RoleInput
+    {
+        public string Name { get; }
+
+        public bool IsActive { get; set; }
+
+        public string? Description { get; }
+
+        private RoleInput(string name, bool isActive, string? description)
+        {
+            Name = name;
+            IsActive = isActive;
+            Description = description;
+        }
+
+        public Role? ToRoleEntity(FeedbackContext context) =>
+            context.Roles.FirstOrDefault(x => x.Name == Name);
+
+        public static RoleInput Create(Role role, string?[]? currentRolesNames)
+        {
+            if (currentRolesNames is not null)
+                return new(role.Name, currentRolesNames.Any(x => x == role.Name), role?.Description);
+
+            return Create(role);
+        }
+
+        public static RoleInput Create(Role role) =>
+            new(role.Name, false, role.Description);
+    }
+}
