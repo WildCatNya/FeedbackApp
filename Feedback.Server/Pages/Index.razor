@@ -3,6 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 
 @inject FeedbackContext _context;
+@inject IMailKitEmailSender _emailSender;
 @inject ISnackbar _snackbar;
 
 <PageTitle>Создание сообщения</PageTitle>
@@ -62,7 +63,7 @@
 
                  <MudGrid Justify="Justify.SpaceBetween" Spacing="1 ">
                      <MudItem Class="d-flex align-center" lg="6" md="8" Style="margin-top: 15px;" xs="12">
-                         <MudCheckBox Label=" Я даю согласие на обработку своих персональных данных" Required="true" RequiredError="@string.Empty" T="bool" />
+                         <MudCheckBox @bind-Checked="Agree" Label=" Я даю согласие на обработку своих персональных данных" Required="true" RequiredError="@string.Empty" />
                      </MudItem>
                      <MudItem Class="d-flex align-center" lg="4" md="6" Style="margin-top: 5px; justify-content:end" xs="12">
                          <MudButton Color="Color.Primary" OnClick="async () => await Submit()" Variant="Variant.Filled">Отправить</MudButton>
@@ -73,13 +74,15 @@
      </MudItem>
  </MudGrid>
 
-    @code {
+ @code {
     Contact Contact = new();
 
     MudForm form;
 
     private List<Subject> Subjects = new();
     private List<Topic> Topics = new();
+
+    private bool Agree { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,13 +98,21 @@
             return;
         }
 
+        Contact.CreationTime = DateTime.Now.ToLocalTime();
+
+        _context.Contacts.Add(Contact);
+
         try
         {
-            Contact.CreationTime = DateTime.Now.ToLocalTime();
-            _context.Contacts.Add(Contact);
             await _context.SaveChangesAsync();
+
+            _emailSender.Send(Contact.Subject);
+
             _snackbar.Add("Сообщение успешно отправлено", Severity.Success);
+
             Contact = new();
+
+            Agree = false;
         }
         catch
         {

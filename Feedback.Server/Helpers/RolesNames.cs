@@ -31,4 +31,9 @@ public static class RolesNames
     /// Может удалять заявки
     /// </summary>
     public const string CanDelete = "CanDelete";
+
+    /// <summary>
+    /// Просмотр: Приемная ректора
+    /// </summary>
+    public const string Rector = "Rector";
 }

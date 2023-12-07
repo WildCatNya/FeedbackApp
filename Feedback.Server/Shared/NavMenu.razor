@@ -7,12 +7,13 @@
         </Authorized>
     </AuthorizeView>
 
-    <AuthorizeView Roles="@RolesNames.Creator">
+    <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.Admin}")">
         <Authorized>
             <MudNavGroup Expanded="true" Icon="@Icons.Material.Filled.SupervisedUserCircle" Title="Пользователи">
                 <MudNavLink Href="/users/view" Icon="@Icons.Material.Filled.PersonSearch">Просмотр</MudNavLink>
                 <MudNavLink Href="/users/registration" Icon="@Icons.Material.Filled.PersonAddAlt1">Регистрация</MudNavLink>
             </MudNavGroup>
+            <MudNavLink Href="/contacts/redirect" Icon="@Icons.Material.Filled.CompareArrows">Перенаправление заявок</MudNavLink>
         </Authorized>
     </AuthorizeView>
 </MudNavMenu>
