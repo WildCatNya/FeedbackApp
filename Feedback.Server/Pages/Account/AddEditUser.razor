@@ -1,7 +1,7 @@
 ﻿@page "/users/registration"
 @page "/users/edit/{UserAccountId:int}"
 
-@attribute [Authorize(Roles = $"{RolesNames.Creator},{RolesNames.Admin}")]
+@attribute [Authorize(Roles = RolesNames.Creator)]
 
 @inject FeedbackContext _context
 @inject NavigationManager _navigationManager

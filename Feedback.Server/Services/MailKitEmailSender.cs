@@ -40,9 +40,11 @@ public sealed class MailKitEmailSender : IMailKitEmailSender
             Text = "По вашей теме появилась новая заявка"
         };
 
-        _client.Connect(_configuration["SMTP:Address"], 465, true);
+        if (!_client.IsConnected)
+            _client.Connect(_configuration["SMTP:Address"], 465, true);
 
-        _client.Authenticate(_configuration["SMTP:Login"], _configuration["SMTP:Password"]);
+        if (!_client.IsAuthenticated)
+            _client.Authenticate(_configuration["SMTP:Login"], _configuration["SMTP:Password"]);
 
         _client.Send(message);
 

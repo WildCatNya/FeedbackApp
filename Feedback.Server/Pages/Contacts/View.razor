@@ -16,12 +16,6 @@ else if (!Contacts.Any())
 }
 else
 {
-    @* <MudPaper Elevation="25">
-        <MudToolBar>
-            <CompleteSortButtons Contacts="SourceContacts" SortCallback="SortCallbackHandler" />
-        </MudToolBar>
-    </MudPaper> *@
-
     <MudTabs ApplyEffectsToContainer="true" Elevation="2" PanelClass="pa-6" Rounded="true">
         @foreach (var subjectGroup in Contacts.GroupBy(x => x.Subject.ShortValue).OrderBy(x => x.Key))
         {
@@ -52,8 +46,6 @@ else
 
     private List<Contact>? Contacts = [];
 
-    //private List<Contact>? Contacts;
-
     protected override async Task OnInitializedAsync()
     {
         AuthenticationState authenticationState = await AuthenticationStateTask;
@@ -66,9 +58,9 @@ else
 
             string[] roles = roleClaims.Select(x => x.Value).ToArray();
 
-            if (RoleCheck(roles, RolesNames.Creator, RolesNames.Admin, RolesNames.AllSeeing))
+            if (authenticationState.User.IsInRoles(RolesNames.Creator, RolesNames.Admin, RolesNames.AllSeeing))
             {
-                bool allseeing = RoleCheck(roles, RolesNames.Creator, RolesNames.CanConceal);
+                bool allseeing = authenticationState.User.IsInRoles(RolesNames.Creator, RolesNames.CanConceal);
 
                 Contacts = await (allseeing ? contacts : contacts.Where(x => !x.Hide)).ToListAsync();
             }
@@ -76,19 +68,8 @@ else
             {
                 Contacts = await contacts.Where(contact => roles.Any(role => contact.Subject.Role.Name == role)).Where(x => !x.Hide).ToListAsync();
             }
-
-            //SourceContacts = Contacts;
         }
     }
 
-    private bool RoleCheck(string[] currentRoles, params string[] roles) =>
-        currentRoles.Any(currentRole => roles.Any(role => currentRole == role));
-
     private void StateChangeEventCallbackHandler() => StateHasChanged();
-
-    // private void SortCallbackHandler(List<Contact> sortedContacts)
-    // {
-    //     Contacts = sortedContacts;
-    //     StateHasChanged();
-    // }
 }

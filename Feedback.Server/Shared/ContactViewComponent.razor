@@ -31,11 +31,13 @@
         <MudCardActions>
                 @if (!Contact.IsCompleted)
                 {
-                    <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
+                    <AuthorizeView Roles="@($"{RolesNames.Creator},{Contact.Subject.Role.Name}")">
+                        <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
+                    </AuthorizeView>
                 }
                 else
                 {
-                    <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.Admin},{RolesNames.CanCancel}")">
+                    <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.CanCancel}")">
                         <Authorized>
                             <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
                         </Authorized>
@@ -44,6 +46,12 @@
             <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.CanConceal}")">
                 <Authorized>
                     <MudIconButton Icon="@HideIconPath" OnClick="ChangeHideState" Title="@HideTitle" />
+                </Authorized>
+            </AuthorizeView>
+
+            <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.Admin}")">
+                <Authorized>
+                    <MudIconButton Icon="@Icons.Material.Filled.CompareArrows" OnClick="ShowRedirectContactDialog" Title="Перенаправить заявку" />
                 </Authorized>
             </AuthorizeView>
 
@@ -117,5 +125,29 @@ else
         DialogOptions options = new() { MaxWidth = MaxWidth.Small, FullWidth = true };
 
         IDialogReference? dialog = await _dialog.ShowAsync<ContactPageMudDialog>("Contact Page", parameters, options);
+    }
+
+    private async void ShowRedirectContactDialog()
+    {
+        DialogParameters<ContactPageMudDialog> parameters = new() { { x => x.Contact, Contact } };
+
+        DialogOptions options = new() { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        IDialogReference? dialog = await _dialog.ShowAsync<RedirectSubjectMudDialog>("Redirect Page", parameters, options);
+
+        DialogResult? dialogResult = await dialog.Result;
+
+        if (dialogResult.Canceled) return;
+
+        if ((bool)dialogResult.Data)
+        {
+            _snackbar.Add("Заявка успешно перемещена", Severity.Success);
+
+            await StateChangeEventCallback.InvokeAsync();
+        }
+        else
+        {
+            _snackbar.Add("Что-то пошло не так", Severity.Error);
+        }
     }
 }

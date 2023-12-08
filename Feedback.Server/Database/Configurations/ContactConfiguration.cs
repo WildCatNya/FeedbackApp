@@ -13,7 +13,7 @@ public sealed class ContactConfiguration : IEntityTypeConfiguration<Contact>
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.StudentGroup).HasMaxLength(15);
+        builder.Property(x => x.StudentGroup).HasMaxLength(100);
         builder.Property(x => x.Telephone).HasMaxLength(30);
         builder.Property(x => x.Message).HasMaxLength(1000);
 

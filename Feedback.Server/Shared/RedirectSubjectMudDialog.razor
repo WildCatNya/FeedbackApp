@@ -1,0 +1,62 @@
+﻿@inject FeedbackContext _context;
+
+@if (Subjects is not null)
+{
+    <MudDialog>
+        <TitleContent>Контакт: @Contact.FullName</TitleContent>
+
+        <DialogContent>
+            <MudForm>
+                <MudTextField @bind-Value="Contact.Subject.ShortValue" Label="Текущая тема" ReadOnly="true" />
+
+                <MudSelect @bind-Value="Contact.IdSubject" AnchorOrigin="Origin.BottomCenter" Label="Новая тема обращения" T="int">
+
+                    @foreach (var subject in Subjects)
+                    {
+                        <MudSelectItem Value="@subject.Id">@subject.ShortValue</MudSelectItem>
+                    }
+
+                </MudSelect>
+            </MudForm>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="SaveAndExit" Disabled="!ValueHasChanged">Сохранить и закрыть</MudButton>
+            <MudButton OnClick="Exit">Закрыть</MudButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Contact Contact { get; set; }
+
+    private int CurrentSubjectId;
+
+    private List<Subject> Subjects;
+
+    private bool ValueHasChanged => CurrentSubjectId != Contact.IdSubject;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Subjects = await _context.Subjects.ToListAsync();
+
+        CurrentSubjectId = Contact.IdSubject;
+    }
+
+    private async void SaveAndExit()
+    {
+        try
+        {
+            await _context.SaveChangesAsync();
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch
+        {
+            MudDialog.Close(DialogResult.Ok(false));
+        }
+    }
+
+    private void Exit() => MudDialog.Close(DialogResult.Cancel());
+}

@@ -29,4 +29,7 @@ public static class DefaultExtension
 
         return new(claimsIdentity);
     }
+
+    public static bool IsInRoles(this ClaimsPrincipal user, params string[] roles) =>
+        roles.Any(role => user.IsInRole(role));
 }
