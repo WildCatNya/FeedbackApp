@@ -14,7 +14,7 @@ public sealed class Contact : Entity
 
     public string? MiddleName { get; set; } = null!;
 
-    public string FullName => $"{LastName} {Name} {MiddleName}";
+    public string FullName => $"{LastName} {Name} {MiddleName}".Trim();
 
     public string? StudentGroup { get; set; } = null!;
 

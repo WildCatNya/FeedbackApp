@@ -106,7 +106,7 @@
         {
             await _context.SaveChangesAsync();
 
-            _emailSender.Send(Contact.Subject);
+            Task.Run(() => _emailSender.Send(Contact.Subject));
 
             _snackbar.Add("Сообщение успешно отправлено", Severity.Success);
 

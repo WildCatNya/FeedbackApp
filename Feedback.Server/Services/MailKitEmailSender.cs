@@ -11,11 +11,13 @@ public sealed class MailKitEmailSender : IMailKitEmailSender
 {
     private readonly FeedbackContext _context;
     private readonly IConfiguration _configuration;
+    private readonly SmtpClient _client;
 
-    public MailKitEmailSender(FeedbackContext context, IConfiguration configuration)
+    public MailKitEmailSender(FeedbackContext context, SmtpClient client, IConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
+        _client = client;
     }
 
     public void Send(Subject subject)
@@ -31,22 +33,20 @@ public sealed class MailKitEmailSender : IMailKitEmailSender
             message.To.Add(new MailboxAddress(Guid.NewGuid().ToString(), item));
         }
 
-        message.Subject = "Обратная связь: " + subject.ShortValue;
+        message.Subject = "Оповещение обратной связи: " + subject.ShortValue;
 
         message.Body = new TextPart("plain")
         {
             Text = "По вашей теме появилась новая заявка"
         };
 
-        using SmtpClient client = new();
+        _client.Connect(_configuration["SMTP:Address"], 465, true);
 
-        client.Connect(_configuration["SMTP:Address"], 465, true);
+        _client.Authenticate(_configuration["SMTP:Login"], _configuration["SMTP:Password"]);
 
-        client.Authenticate(_configuration["SMTP:Login"], _configuration["SMTP:Password"]);
+        _client.Send(message);
 
-        client.Send(message);
-
-        client.Disconnect(true);
+        _client.Disconnect(true);
     }
 
     private IEnumerable<string> Who(Subject subject)
