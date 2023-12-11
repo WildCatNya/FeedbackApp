@@ -18,7 +18,5 @@ public sealed class SubjectConfiguration : IEntityTypeConfiguration<Subject>
         builder.HasOne(x => x.Role).WithMany(x => x.Subjects).HasForeignKey(x => x.IdRole);
 
         builder.Navigation(x => x.Role).AutoInclude();
-
-        builder.HasData(CsvToEntity.GetEntitiesFromCsv<Subject>(@"C:\FeedbackDev_table_Subject.csv"));
     }
 }

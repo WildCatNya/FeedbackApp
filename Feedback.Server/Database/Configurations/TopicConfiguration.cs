@@ -14,7 +14,5 @@ public sealed class TopicConfiguration : IEntityTypeConfiguration<Topic>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Value).HasMaxLength(50);
-
-        builder.HasData(CsvToEntity.GetEntitiesFromCsv<Topic>(@"C:\FeedbackDev_table_Topic.csv"));
     }
 }

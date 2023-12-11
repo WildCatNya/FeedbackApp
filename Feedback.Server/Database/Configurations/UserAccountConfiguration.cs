@@ -16,7 +16,5 @@ public sealed class UserAccountConfiguration : IEntityTypeConfiguration<UserAcco
         builder.Property(x => x.DepartmentEmail).HasMaxLength(150);
 
         builder.Navigation(x => x.UserAccountRoles).AutoInclude();
-
-        builder.HasData(CsvToEntity.GetEntitiesFromCsv<UserAccount>(@"C:\FeedbackDev_table_UserAccount.csv"));
     }
 }

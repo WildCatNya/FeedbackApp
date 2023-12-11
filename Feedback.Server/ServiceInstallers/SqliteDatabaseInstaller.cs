@@ -6,6 +6,8 @@ namespace Feedback.Server.ServiceInstallers;
 
 public sealed class SqliteDatabaseInstaller : ServiceInstaller
 {
+    public override bool CanInstall => false;
+
     public override void Install(IServiceCollection services, IConfiguration configuration)
     {
         string dirPath = $@"{Directory.GetCurrentDirectory()}\wwwroot\Database";

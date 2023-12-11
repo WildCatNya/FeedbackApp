@@ -6,8 +6,6 @@ namespace Feedback.Server.ServiceInstallers;
 
 public sealed class DatabaseInstaller : ServiceInstaller
 {
-    public override bool CanInstall => false;
-
     public override void Install(IServiceCollection services, IConfiguration configuration)
     {
         string connectionString = configuration.GetConnectionString(FeedbackContext.ConnectionStringName);

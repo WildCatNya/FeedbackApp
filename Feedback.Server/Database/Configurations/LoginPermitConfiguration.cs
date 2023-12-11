@@ -14,7 +14,5 @@ public sealed class LoginPermitConfiguration : IEntityTypeConfiguration<LoginPer
         builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.UserAccount).WithMany(x => x.LoginPermits).HasForeignKey(x => x.IdUserAccount);
-
-        builder.HasData(CsvToEntity.GetEntitiesFromCsv<LoginPermit>(@"C:\FeedbackDev_table_LoginPermit.csv"));
     }
 }
