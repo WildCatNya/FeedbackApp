@@ -29,20 +29,22 @@
                 </MudContainer>
         </MudCardContent>
         <MudCardActions>
-                @if (!Contact.IsCompleted)
-                {
-                    <AuthorizeView Roles="@($"{RolesNames.Creator},{Contact.Subject.Role.Name}")">
-                        <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
-                    </AuthorizeView>
-                }
-                else
-                {
-                    <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.CanCancel}")">
-                        <Authorized>
+                <AuthorizeView Roles="@($"{RolesNames.Creator},{Contact.Subject.Role.Name}")">
+                    <Authorized>
+                        @if (!Contact.IsCompleted)
+                        {
                             <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
-                        </Authorized>
-                    </AuthorizeView>
-                }
+                        }
+                        else
+                        {
+                            <AuthorizeView Context="layer2" Roles="@($"{RolesNames.Creator},{RolesNames.CanCancel}")">
+                                <Authorized>
+                                    <MudIconButton Icon="@CompletionIconPath" OnClick="ChangeCompletionState" Title="@CompletionTitle" />
+                                </Authorized>
+                            </AuthorizeView>
+                        }
+                    </Authorized>
+                </AuthorizeView>
             <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.CanConceal}")">
                 <Authorized>
                     <MudIconButton Icon="@HideIconPath" OnClick="ChangeHideState" Title="@HideTitle" />
