@@ -9,6 +9,10 @@ public sealed class EmailServicesInstaller : ServiceInstaller
 {
     public override void Install(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<ICustomEmailService, CustomEmailService>();
+
+        services.AddScoped<IMailKitEmailCreator, MailKitEmailCreator>();
+
         services.AddScoped<IMailKitEmailSender, MailKitEmailSender>();
 
         services.AddSingleton<SmtpClient>();

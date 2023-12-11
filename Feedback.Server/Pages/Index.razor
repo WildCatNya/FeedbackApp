@@ -3,10 +3,10 @@
 @using System.ComponentModel.DataAnnotations
 
 @inject FeedbackContext _context;
-@inject IMailKitEmailSender _emailSender;
+@inject ICustomEmailService _emailService;
 @inject ISnackbar _snackbar;
 
-<PageTitle>Создание сообщения</PageTitle>
+<PageTitle>Главная</PageTitle>
 
 <MudGrid>
     <MudItem xs="12" sm="7">
@@ -106,7 +106,7 @@
         {
             await _context.SaveChangesAsync();
 
-            Task.Run(() => _emailSender.Send(Contact.Subject));
+            Task.Run(() => _emailService.CreateAndSend(Contact.Subject));
 
             _snackbar.Add("Сообщение успешно отправлено", Severity.Success);
 

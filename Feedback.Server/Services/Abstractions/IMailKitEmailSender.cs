@@ -1,8 +1,8 @@
-﻿using Feedback.Server.Database.Entities;
+﻿using MimeKit;
 
 namespace Feedback.Server.Services.Abstractions;
 
 public interface IMailKitEmailSender
 {
-    public void Send(Subject subject);
+    public void Send(MimeMessage message);
 }
