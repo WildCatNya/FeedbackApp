@@ -22,9 +22,9 @@
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (loginPermit is null || !loginPermit.IsActive)
-            return RedirectToPage("/account/login");
+            return LocalRedirect("/account/login");
 
-        DateTime dateTime = DateTime.Now.ToLocalTime().AddHours(3);
+        DateTime dateTime = DateTime.Now.ToLocalTime().AddHours(6);
 
         AuthenticationProperties authenticationProperties = new() { IsPersistent = true, ExpiresUtc = dateTime };
 
@@ -36,11 +36,11 @@
 
             DatabaseContext.SaveChanges();
 
-            return RedirectToPage("/_Host");
+            return LocalRedirect("/contacts/view");
         }
         catch (Exception ex)
         {
-            return RedirectToPage("/_Host");
+            return LocalRedirect("/account/login");
         }
     }
 
