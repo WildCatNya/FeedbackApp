@@ -63,7 +63,7 @@
                          <MudCheckBox @bind-Checked="Agree" Label=" Я даю согласие на обработку своих персональных данных" Required="true" RequiredError="@string.Empty" />
                      </MudItem>
                      <MudItem Class="d-flex align-center" lg="4" md="6" Style="margin-top: 5px; justify-content:end" xs="12">
-                         <MudButton Color="Color.Primary" OnClick="async () => await Submit()" Variant="Variant.Filled">Отправить</MudButton>
+                         <MudButton OnClick="async () => await Submit()" Variant="Variant.Filled" Style="background-color: #03787c; color: white">Отправить</MudButton>
                      </MudItem>
                  </MudGrid>
              </MudForm>

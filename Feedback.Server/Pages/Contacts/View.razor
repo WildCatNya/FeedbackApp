@@ -26,7 +26,7 @@ else
                     @{
                         int count = subjectGroup.Count(x => !x.IsCompleted);
                     }
-                    <MudBadge Bordered="true" Color="Color.Primary" Content="@count" Overlap="true" Visible="@(count != 0)">@subjectGroup.Key</MudBadge>
+                    <MudBadge Bordered="true" BadgeClass="mud-theme-custom" Content="@count" Overlap="true" Visible="@(count != 0)">@subjectGroup.Key</MudBadge>
                     </TabContent>
                     <ChildContent>
                         <MudGrid Justify="Justify.FlexStart">
