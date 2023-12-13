@@ -41,7 +41,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Subjects = await _context.Subjects.Where(x => !x.Hide).OrderByDescending(x => x.Priority).ThenBy(x => x.ShortValue).ToListAsync();
+        Subjects = await _context.Subjects.OrderByDescending(x => x.Priority).ThenBy(x => x.ShortValue).ToListAsync();
 
         CurrentSubjectId = Contact.IdSubject;
     }
