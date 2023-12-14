@@ -8,6 +8,8 @@ namespace Feedback.Server.Services;
 
 public sealed class MailKitEmailCreator : IMailKitEmailCreator
 {
+    public const string ContactViewUrl = "http://lk.sibupk.su:6789/contacts/view";
+
     private readonly FeedbackContext _context;
     private readonly IConfiguration _configuration;
     private readonly string _emailName;
@@ -19,7 +21,13 @@ public sealed class MailKitEmailCreator : IMailKitEmailCreator
         _emailName = _configuration["SMTP:EmailName"];
     }
 
-    public MimeMessage CreateMessage(Subject subject)
+    /// <summary>
+    /// Создаёт сообщение по теме обращения
+    /// </summary>
+    /// <param name="subject"></param>
+    /// <param name="text">Если текст пустой, то будет использована стандартная фраза</param>
+    /// <returns></returns>
+    public MimeMessage CreateMessage(Subject subject, string? text)
     {
         MimeMessage message = new();
 
@@ -36,7 +44,7 @@ public sealed class MailKitEmailCreator : IMailKitEmailCreator
 
         message.Body = new TextPart("plain")
         {
-            Text = "По вашей теме появилась новая заявка: http://lk.sibupk.su:6789/contacts/view"
+            Text = text ?? "По вашей теме появилась новая заявка: " + ContactViewUrl
         };
 
         return message;

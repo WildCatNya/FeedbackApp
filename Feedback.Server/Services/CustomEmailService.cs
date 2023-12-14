@@ -15,9 +15,9 @@ public sealed class CustomEmailService : ICustomEmailService
         _emailSender = emailSender;
     }
 
-    public void CreateAndSend(Subject subject)
+    public void CreateAndSend(Subject subject, string? text = null)
     {
-        MimeMessage message = _emailCreator.CreateMessage(subject);
+        MimeMessage message = _emailCreator.CreateMessage(subject, text);
 
         try
         {

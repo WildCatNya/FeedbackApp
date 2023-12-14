@@ -4,5 +4,5 @@ namespace Feedback.Server.Services.Abstractions;
 
 public interface ICustomEmailService
 {
-    public void CreateAndSend(Subject subject);
+    public void CreateAndSend(Subject subject, string? text = null);
 }

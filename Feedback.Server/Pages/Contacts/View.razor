@@ -1,8 +1,11 @@
 ﻿@page "/contacts/view"
 
 @using System.Security.Claims
+@using Feedback.Server.Services
 
 @inject FeedbackContext _context;
+@inject ICustomEmailService _emailService;
+@inject ISnackbar _snackbar;
 
 @attribute [Authorize]
 
@@ -25,6 +28,14 @@ else
                 <TabContent>
                     @{
                         int count = subjectGroup.Count(x => !x.IsCompleted);
+                    }
+                    @if (count != 0)
+                    {
+                        <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.Admin}")">
+                            <Authorized>
+                                <MudIconButton Icon="@Icons.Material.Filled.Notifications" OnClick="() => Notify(subjectGroup.Key)" />
+                            </Authorized>
+                        </AuthorizeView>
                     }
                     <MudBadge Bordered="true" BadgeClass="mud-theme-custom" Content="@count" Overlap="true" Visible="@(count != 0)">@subjectGroup.Key</MudBadge>
                     </TabContent>
@@ -70,6 +81,21 @@ else
             {
                 Contacts = await contacts.Where(contact => roles.Any(role => contact.Subject.Role.Name == role)).Where(x => !x.Hide).ToListAsync();
             }
+        }
+    }
+
+    private async void Notify(string subjectShortValue)
+    {
+        Subject? subject = await _context.Subjects.FirstOrDefaultAsync(x => x.ShortValue == subjectShortValue);
+
+        if (subject is not null)
+        {
+            Task.Run(() => _emailService.CreateAndSend(subject, "У вас есть нерешенные заявки: " + MailKitEmailCreator.ContactViewUrl));
+            _snackbar.Add("Сообщение успешно отправлено", Severity.Success);
+        }
+        else
+        {
+            _snackbar.Add("Такая тема не была найдена", Severity.Error);
         }
     }
 
