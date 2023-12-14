@@ -54,7 +54,7 @@
 
             Subject? subject = await _context.Subjects.FindAsync(Contact.IdSubject);
 
-            Task.Run(() => _emailService.CreateAndSend(subject));
+            Task.Run(() => _emailService.CreateAndSend(subject, MailType.Redirect));
 
             MudDialog.Close(DialogResult.Ok(true));
         }

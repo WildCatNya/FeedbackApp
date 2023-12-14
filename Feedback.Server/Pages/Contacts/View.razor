@@ -90,7 +90,7 @@ else
 
         if (subject is not null)
         {
-            Task.Run(() => _emailService.CreateAndSend(subject, "У вас есть нерешенные заявки: " + MailKitEmailCreator.ContactViewUrl));
+            Task.Run(() => _emailService.CreateAndSend(subject, MailType.Notify, "У вас есть нерешенные заявки: " + MailKitEmailCreator.ContactViewUrl));
             _snackbar.Add("Сообщение успешно отправлено", Severity.Success);
         }
         else

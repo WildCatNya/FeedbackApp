@@ -1,4 +1,5 @@
 ﻿using Feedback.Server.Database.Entities;
+using Feedback.Server.Helpers;
 using Feedback.Server.Services.Abstractions;
 using MimeKit;
 
@@ -15,7 +16,7 @@ public sealed class CustomEmailService : ICustomEmailService
         _emailSender = emailSender;
     }
 
-    public void CreateAndSend(Subject subject, string? text = null)
+    public void CreateAndSend(Subject subject, MailType mailType, string? text = null)
     {
         MimeMessage message = _emailCreator.CreateMessage(subject, text);
 
@@ -25,9 +26,20 @@ public sealed class CustomEmailService : ICustomEmailService
         }
         catch (Exception ex)
         {
-            MimeMessage supportMessage = _emailCreator.CreateSupportMessage(ex.Message);
+            MimeMessage supportMessage = _emailCreator.CreateSupportMessage($"{GetMailType(mailType)}\n{ex.Message}\nТема: {subject.ShortValue}");
 
             _emailSender.Send(supportMessage);
         }
+    }
+
+    private static string GetMailType(MailType mailType)
+    {
+        return mailType switch
+        {
+            MailType.Create => "Ошибка при создании заявки",
+            MailType.Redirect => "Ошибка при перенаправлении заявки",
+            MailType.Notify => "Ошибка при оповещении о незавершенных заявках",
+            _ => "Неизвестная отправка почты"
+        };
     }
 }
