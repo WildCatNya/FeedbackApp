@@ -1,0 +1,55 @@
+﻿@page "/users/activity"
+
+@inject FeedbackContext _context;
+
+@attribute [Authorize(Roles = $"{RolesNames.Creator},{RolesNames.Admin}")]
+
+<PageTitle>Просмотр активности пользователей</PageTitle>
+
+<MudTable Items="Subjects" Hover="true">
+    <HeaderContent>
+        <MudTh>Тема</MudTh>
+        <MudTh>Кол-во невыполненных заявок</MudTh>
+        <MudTh>Дата последнего входа пользователя(-ей)</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.ShortValue</MudTd>
+            <MudTd>@context.Contacts.Count(x => !x.IsCompleted)</MudTd>
+            <MudTd>
+                @{
+                    var activities = Test(context);
+                }
+                @(activities.Count != 0 ? string.Join(", ", activities) : "---")
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    @code {
+    private List<Subject> Subjects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Subjects = await _context.Subjects.Include(x => x.Contacts)
+            .Where(x => !x.Hide)
+            .OrderByDescending(x => x.Contacts.Count(c => !c.IsCompleted))
+            .ThenBy(x => x.ShortValue)
+            .ToListAsync();
+    }
+
+    private List<string> Test(Subject subject)
+    {
+        var select = _context.UserAccountRoles.AsNoTracking()
+            .Where(x => x.IdRole == subject.IdRole && x.IdUserAccount != 1)
+            .Select(x => x.IdUserAccount)
+            .Join(_context.LoginPermits.AsNoTracking()
+                .Include(lp => lp.UserAccount), 
+                    userId => userId, 
+                    lp => lp.IdUserAccount, 
+                    (userId, lp) => new { UserLogin = lp.UserAccount.Login, CreatedAt = lp.CreatedAt })
+            .GroupBy(x => x.UserLogin)
+            .Select(group => $"{group.Key}: {(group.Max(item => item.CreatedAt).ToString(@"dd.MM.yyyy HH:mm:ss") ?? "---")}")
+            .ToList();
+
+        return select;
+    }
+}

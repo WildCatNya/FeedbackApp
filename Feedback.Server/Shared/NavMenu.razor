@@ -8,12 +8,12 @@
         </Authorized>
     </AuthorizeView>
 
-    <AuthorizeView Roles="@RolesNames.Creator">
-        <Authorized>
-            <MudNavGroup Expanded="true" Icon="@Icons.Material.Filled.SupervisedUserCircle" Title="Пользователи">
-                <MudNavLink Href="/users/view" Icon="@Icons.Material.Filled.PersonSearch">Просмотр</MudNavLink>
+    <AuthorizeView Roles="@($"{RolesNames.Creator},{RolesNames.Admin}")">
+        <MudNavGroup Expanded="true" Icon="@Icons.Material.Filled.SupervisedUserCircle" Title="Пользователи">
+            <MudNavLink Href="/users/activity" Icon="@Icons.Material.Filled.PersonSearch">Просмотр активности</MudNavLink>
+            <AuthorizeView Context="Layer2" Roles="@RolesNames.Creator">
                 <MudNavLink Href="/users/registration" Icon="@Icons.Material.Filled.PersonAddAlt1">Регистрация</MudNavLink>
-            </MudNavGroup>
-        </Authorized>
+            </AuthorizeView>
+        </MudNavGroup>
     </AuthorizeView>
 </MudNavMenu>
