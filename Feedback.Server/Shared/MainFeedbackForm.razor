@@ -1,18 +1,19 @@
-﻿@using System.ComponentModel.DataAnnotations
+﻿@using Feedback.Server.Validators
+@using System.ComponentModel.DataAnnotations
 
 @inject FeedbackContext _context;
 @inject ICustomEmailService _emailService;
 @inject ISnackbar _snackbar;
 
-<MudForm @ref="form" Model="Contact">
+<MudForm @ref="form" Model="Contact" Validation="СontactValidator.ValidateValue">
 
-    <MudTextField @bind-Value="Contact.LastName" Label="Фамилия" Required="true" RequiredError="Фамилия обязательна" T="string" />
+    <MudTextField @bind-Value="Contact.LastName" For="() => Contact.LastName" Label="Фамилия" />
 
-    <MudTextField @bind-Value="Contact.Name" Label="Имя" Required="true" RequiredError="Имя обязательно" T="string" />
+    <MudTextField @bind-Value="Contact.Name" For="() => Contact.Name" Label="Имя" />
 
-    <MudTextField @bind-Value="Contact.MiddleName" Label="Отчество" T="string" />
+    <MudTextField @bind-Value="Contact.MiddleName" Label="Отчество" />
 
-    <MudSelect @bind-Value="Contact.IdTopic" AnchorOrigin="Origin.BottomCenter" Label="Предмет обращения" Required="true" T="int" Validation="new Func<int, string>(Valid)">
+    <MudSelect @bind-Value="Contact.IdTopic" AnchorOrigin="Origin.BottomCenter" For="() => Contact.IdTopic" Label="Предмет обращения">
 
         <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
 
@@ -25,7 +26,7 @@
 
     @if (SubjectId == 0)
     {
-        <MudSelect @bind-Value="Contact.IdSubject" AnchorOrigin="Origin.BottomCenter" Label="Тема обращения" Required="true" T="int" Validation="new Func<int, string>(Valid)">
+        <MudSelect @bind-Value="Contact.IdSubject" AnchorOrigin="Origin.BottomCenter" For="() => Contact.IdSubject" Label="Тема обращения">
 
             <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
 
@@ -37,18 +38,18 @@
         </MudSelect>
     }
 
-    <MudTextField @bind-Value="Contact.StudentGroup" HelperText="Для обучающихся" Label="Группа" T="string" />
+    <MudTextField @bind-Value="Contact.StudentGroup" HelperText="Для обучающихся" For="() => Contact.StudentGroup" Label="Группа/Шифр" />
 
-    <MudTextField @bind-Value="Contact.Telephone" InputType="InputType.Telephone" Label="Телефон" T="string" />
+    <MudTextField @bind-Value="Contact.Telephone" For="() => Contact.Telephone" InputType="InputType.Telephone" Label="Телефон" />
 
     @if (!string.IsNullOrWhiteSpace(Contact.Telephone))
     {
         <MudCheckBox @bind-Checked="Contact.HasWhatsApp" Disabled="string.IsNullOrWhiteSpace(Contact.Telephone)" Label="WhatsApp?" Style="margin-top: 15px;" />
     }
 
-    <MudTextField @bind-Value="Contact.Email" Label="Почта" Required="true" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid"} )" RequiredError="Почта обязательна" T="string" />
+    <MudTextField @bind-Value="Contact.Email" For="() => Contact.Email" Label="Почта" />
 
-    <MudTextField @bind-Value="Contact.Message" AutoGrow Label="Текст обращения" Required="true" RequiredError="Текст обращения обязателен" T="string" />
+    <MudTextField @bind-Value="Contact.Message" AutoGrow For="() => Contact.Message" Label="Текст обращения" />
 
      <MudGrid Justify="Justify.SpaceBetween" Spacing="1 ">
          <MudItem Class="d-flex align-center" lg="6" md="8" Style="margin-top: 15px;" xs="12">
@@ -66,6 +67,8 @@
     private Contact Contact;
 
     MudForm form;
+
+    private ContactValidator СontactValidator = new();
 
     private List<Subject> Subjects = new();
     private List<Topic> Topics = new();
@@ -109,8 +112,6 @@
             _snackbar.Add("Что-то пошло не так", Severity.Error);
         }
     }
-
-    private string Valid(int value) => value != 0 ? string.Empty : "Необходимо выбрать!";
 
     private Contact NewContact() =>
         SubjectId != 0 ? new() { IdSubject = SubjectId } : new();
