@@ -1,11 +1,5 @@
 ﻿@page "/"
 
-@using System.ComponentModel.DataAnnotations
-
-@inject FeedbackContext _context;
-@inject ICustomEmailService _emailService;
-@inject ISnackbar _snackbar;
-
 <PageTitle>Главная</PageTitle>
 
 <MudGrid>
@@ -18,107 +12,7 @@
     </MudItem>
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="form" Model="Contact">
-
-                <MudTextField @bind-Value="Contact.LastName" Label="Фамилия" Required="true" RequiredError="Фамилия обязательна" T="string" />
-
-                <MudTextField @bind-Value="Contact.Name" Label="Имя" Required="true" RequiredError="Имя обязательно" T="string" />
-
-                <MudTextField @bind-Value="Contact.MiddleName" Label="Отчество" T="string" />
-
-                <MudSelect @bind-Value="Contact.IdTopic" AnchorOrigin="Origin.BottomCenter" Label="Предмет обращения" Required="true" T="int" Validation="new Func<int, string>(Valid)">
-
-                    <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
-
-                    @foreach (var topic in Topics)
-                    {
-                        <MudSelectItem Value="@topic.Id">@topic.Value</MudSelectItem>
-                    }
-
-                </MudSelect>
-
-                <MudSelect @bind-Value="Contact.IdSubject" AnchorOrigin="Origin.BottomCenter" Label="Тема обращения" Required="true" T="int" Validation="new Func<int, string>(Valid)">
-
-                    <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
-
-                    @foreach (var subject in Subjects)
-                    {
-                        <MudSelectItem Value="@subject.Id">@subject.Value</MudSelectItem>
-                    }
-
-                </MudSelect>
-
-                <MudTextField @bind-Value="Contact.StudentGroup" HelperText="Для обучающихся" Label="Группа" T="string" />
-
-                <MudTextField @bind-Value="Contact.Telephone" InputType="InputType.Telephone" Label="Телефон" T="string" />
-
-                @if (!string.IsNullOrWhiteSpace(Contact.Telephone))
-                {
-                    <MudCheckBox @bind-Checked="Contact.HasWhatsApp" Disabled="string.IsNullOrWhiteSpace(Contact.Telephone)" Label="WhatsApp?" Style="margin-top: 15px;" />
-                }
-
-                <MudTextField @bind-Value="Contact.Email" Label="Почта" Required="true" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid"} )" RequiredError="Почта обязательна" T="string" />
-
-                <MudTextField @bind-Value="Contact.Message" AutoGrow Label="Текст обращения" Required="true" RequiredError="Текст обращения обязателен" T="string" />
-
-                 <MudGrid Justify="Justify.SpaceBetween" Spacing="1 ">
-                     <MudItem Class="d-flex align-center" lg="6" md="8" Style="margin-top: 15px;" xs="12">
-                         <MudCheckBox @bind-Checked="Agree" Label=" Я даю согласие на обработку своих персональных данных" Required="true" RequiredError="@string.Empty" />
-                     </MudItem>
-                     <MudItem Class="d-flex align-center" lg="4" md="6" Style="margin-top: 5px; justify-content:end" xs="12">
-                         <MudButton OnClick="async () => await Submit()" Variant="Variant.Filled" Style="background-color: #03787c; color: white">Отправить</MudButton>
-                     </MudItem>
-                 </MudGrid>
-             </MudForm>
-         </MudPaper>
-     </MudItem>
- </MudGrid>
-
- @code {
-    Contact Contact = new();
-
-    MudForm form;
-
-    private List<Subject> Subjects = new();
-    private List<Topic> Topics = new();
-
-    private bool Agree { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        Subjects = await _context.Subjects.Where(x => !x.Hide).OrderByDescending(x => x.Priority).ThenBy(x => x.ShortValue).ToListAsync();
-        Topics = await _context.Topics.ToListAsync();
-    }
-
-    private async Task Submit()
-    {
-        if (!form.IsValid)
-        {
-            await form.Validate();
-            return;
-        }
-
-        Contact.CreationTime = DateTime.Now.ToLocalTime();
-
-        _context.Contacts.Add(Contact);
-
-        try
-        {
-            await _context.SaveChangesAsync();
-
-            Task.Run(() => _emailService.CreateAndSend(Contact.Subject, MailType.Create));
-
-            _snackbar.Add("Сообщение успешно отправлено", Severity.Success);
-
-            Contact = new();
-
-            Agree = false;
-        }
-        catch
-        {
-            _snackbar.Add("Что-то пошло не так", Severity.Error);
-        }
-    }
-
-    private string Valid(int value) => value != 0 ? string.Empty : "Необходимо выбрать!";
-}
+            <MainFeedbackForm SubjectId="0" />
+        </MudPaper>
+    </MudItem>
+</MudGrid>
