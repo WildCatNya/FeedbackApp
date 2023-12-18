@@ -9,8 +9,6 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.WebHost.UseUrls(builder.Configuration["Hosts:Address"]);
-
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
