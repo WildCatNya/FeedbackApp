@@ -35,6 +35,8 @@ public sealed class ContactValidator : BaseValidator<Contact>
             .WithMessage("Телефон должен быть вида: +7 777 777-77-77");
 
         RuleFor(x => x.Email)
+            .NotEmpty()
+            .WithMessage("Почта обязательна")
             .EmailAddress()
             .WithMessage("Неверный адрес почты");
 
