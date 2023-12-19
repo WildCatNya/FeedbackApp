@@ -14,7 +14,7 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.ShortValue</MudTd>
-            <MudTd>@context.Contacts.Count(x => !x.IsCompleted)</MudTd>
+            <MudTd>@context.Contacts.Where(x => !x.Hide).Count(x => !x.IsCompleted)</MudTd>
             <MudTd>
                 @{
                     var activities = Test(context);
