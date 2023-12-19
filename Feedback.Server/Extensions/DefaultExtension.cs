@@ -15,7 +15,7 @@ public static class DefaultExtension
     {
         DateTime normalizedDateTime = localDateTime ?? DateTime.Now.ToLocalTime().AddHours(3);
 
-        List <Claim> claims =
+        List<Claim> claims =
         [
             new(ClaimTypes.Name, userAccount.Login),
             new(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),

@@ -6,7 +6,7 @@ public sealed class Contact : Entity
 {
     public int IdSubject { get; set; }
 
-    public  int IdTopic { get; set; }
+    public int IdTopic { get; set; }
 
     public string LastName { get; set; } = null!;
 
