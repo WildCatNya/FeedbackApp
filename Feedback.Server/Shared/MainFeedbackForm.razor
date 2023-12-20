@@ -7,13 +7,13 @@
 
 <MudForm @ref="form" Model="Contact" Validation="СontactValidator.ValidateValue">
 
-    <MudTextField @bind-Value="Contact.LastName" For="() => Contact.LastName" Label="Фамилия" />
+    <MudTextField @bind-Value="Contact.LastName" For="() => Contact.LastName" Label="Фамилия" Required="true" />
 
-    <MudTextField @bind-Value="Contact.Name" For="() => Contact.Name" Label="Имя" />
+    <MudTextField @bind-Value="Contact.Name" For="() => Contact.Name" Label="Имя" Required="true" />
 
     <MudTextField @bind-Value="Contact.MiddleName" Label="Отчество" />
 
-    <MudSelect @bind-Value="Contact.IdTopic" AnchorOrigin="Origin.BottomCenter" For="() => Contact.IdTopic" Label="Предмет обращения">
+    <MudSelect @bind-Value="Contact.IdTopic" AnchorOrigin="Origin.BottomCenter" For="() => Contact.IdTopic" Label="Предмет обращения" Required="true">
 
         <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
 
@@ -26,7 +26,7 @@
 
     @if (SubjectId == 0)
     {
-        <MudSelect @bind-Value="Contact.IdSubject" AnchorOrigin="Origin.BottomCenter" For="() => Contact.IdSubject" Label="Тема обращения">
+        <MudSelect @bind-Value="Contact.IdSubject" AnchorOrigin="Origin.BottomCenter" For="() => Contact.IdSubject" Label="Тема обращения" Required="true">
 
             <MudSelectItem Disabled="true" Value="0">---</MudSelectItem>
 
@@ -47,9 +47,9 @@
         <MudCheckBox @bind-Checked="Contact.HasWhatsApp" Disabled="string.IsNullOrWhiteSpace(Contact.Telephone)" Label="WhatsApp?" Style="margin-top: 15px;" />
     }
 
-    <MudTextField @bind-Value="Contact.Email" For="() => Contact.Email" Label="Почта" />
+    <MudTextField @bind-Value="Contact.Email" For="() => Contact.Email" Label="Почта" Required="true" />
 
-    <MudTextField @bind-Value="Contact.Message" AutoGrow For="() => Contact.Message" Label="Текст обращения" />
+    <MudTextField @bind-Value="Contact.Message" AutoGrow For="() => Contact.Message" Label="Текст обращения" Required="true" />
 
      <MudGrid Justify="Justify.SpaceBetween" Spacing="1 ">
          <MudItem Class="d-flex align-center" lg="6" md="8" Style="margin-top: 15px;" xs="12">

@@ -17,7 +17,7 @@
 
                     <MudTextField @bind-Value="Password" Label="@PasswordLabel" InputType="InputType.Password" HelperText="Пароль хранится в зашифрованном виде" Required="@(UserAccountId == 0)" RequiredError="Это поле не должно быть пустым" T="string"></MudTextField>
 
-                    <MudTextField @bind-Value="UserAccount.DepartmentEmail" Label="Почта" Required="true" RequiredError="Это поле не должно быть пустым" T="string"></MudTextField>
+                    @* <MudTextField @bind-Value="UserAccount.DepartmentEmail" Label="Почта" Required="true" RequiredError="Это поле не должно быть пустым" T="string"></MudTextField> *@
 
                     <MudButton Color="Color.Primary" OnClick="@(() => _navigationManager.NavigateTo("/users"))">Назад</MudButton>
 

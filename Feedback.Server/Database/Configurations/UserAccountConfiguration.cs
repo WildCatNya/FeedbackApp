@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Feedback.Server.Database.Configurations;
 
+#pragma warning disable CS1030
+
 public sealed class UserAccountConfiguration : IEntityTypeConfiguration<UserAccount>
 {
     public void Configure(EntityTypeBuilder<UserAccount> builder)
@@ -12,7 +14,7 @@ public sealed class UserAccountConfiguration : IEntityTypeConfiguration<UserAcco
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.DepartmentEmail).HasMaxLength(150);
+#warning Конфигурация UserAccountEmail написанна в классе EmailConfiguration
 
         builder.Navigation(x => x.UserAccountRoles).AutoInclude();
     }

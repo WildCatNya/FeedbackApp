@@ -8,7 +8,7 @@ public sealed class UserAccount : Entity
 
     public string PasswordHash { get; set; } = null!;
 
-    public string DepartmentEmail { get; set; } = null!;
+    public List<Email> Emails { get; set; } = [];
 
     public List<LoginPermit> LoginPermits { get; set; } = [];
 

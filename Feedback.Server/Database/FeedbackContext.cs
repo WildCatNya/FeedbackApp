@@ -15,6 +15,8 @@ public class FeedbackContext : DbContext
 
     public DbSet<Contact> Contacts { get; set; }
 
+    public DbSet<Email> Emails { get; set; }
+
     public DbSet<LoginPermit> LoginPermits { get; set; }
 
     public DbSet<Role> Roles { get; set; }
@@ -24,6 +26,8 @@ public class FeedbackContext : DbContext
     public DbSet<Topic> Topics { get; set; }
 
     public DbSet<UserAccount> UserAccounts { get; set; }
+
+    public DbSet<UserAccountEmail> UserAccountEmails { get; set; }
 
     public DbSet<UserAccountRole> UserAccountRoles { get; set; }
 

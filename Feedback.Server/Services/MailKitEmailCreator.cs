@@ -33,11 +33,11 @@ public sealed class MailKitEmailCreator : IMailKitEmailCreator
 
         message.From.Add(new MailboxAddress(_emailName, _configuration["SMTP:EmailAddress"]));
 
-        var emails = Who(subject).ToList();
+        List<string> emails = Who(subject);
 
-        foreach (var item in emails)
+        foreach (var email in emails)
         {
-            message.To.Add(new MailboxAddress(Guid.NewGuid().ToString(), item));
+            message.To.Add(new MailboxAddress(Guid.NewGuid().ToString(), email));
         }
 
         message.Subject = "Оповещение обратной связи: " + subject.ShortValue;
@@ -68,10 +68,13 @@ public sealed class MailKitEmailCreator : IMailKitEmailCreator
         return message;
     }
 
-    private IEnumerable<string> Who(Subject subject)
+    private List<string> Who(Subject subject)
     {
-        List<UserAccountRole> uar = [.. _context.UserAccountRoles.Include(x => x.UserAccount).Include(x => x.Role)];
-
-        return uar.Where(x => x.Role.Name == subject.Role.Name).Select(x => x.UserAccount.DepartmentEmail).Distinct();
+        return _context.UserAccountRoles
+            .Include(userAccountRole => userAccountRole.UserAccount)
+                .ThenInclude(userAccount => userAccount.Emails)
+            .Where(userAccountRole => userAccountRole.IdRole == subject.IdRole)
+            .SelectMany(userAccountRole => userAccountRole.UserAccount.Emails.Select(email => email.Address))
+            .ToList();
     }
 }
