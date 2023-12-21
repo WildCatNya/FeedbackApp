@@ -1,18 +1,42 @@
 ﻿@page "/"
+@page "/{SubjectId:int}"
+
+@inject FeedbackContext _context;
 
 <PageTitle>Главная</PageTitle>
 
-<MudGrid>
-    <MudItem xs="12" sm="7">
-        <MudText Typo="Typo.h6">
-            Если у Вас возник вопрос, сначала просмотрите ответы на
-            <MudLink Href="https://sites.google.com/view/spupk/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0/%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D1%8B-%D0%BD%D0%B0-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B" Target="_blank">часто возникающие вопросы</MudLink>
-        </MudText>
-        <MudText Typo="Typo.subtitle1">Если Вы не нашли ответ, оставьте вопрос в форме ниже</MudText>
-    </MudItem>
-    <MudItem xs="12" sm="7">
-        <MudPaper Class="pa-4">
-            <MainFeedbackForm SubjectId="0" />
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+@if (SubjectId == 0 || IsSubjectIdValid)
+{
+    <MudGrid>
+        @if (SubjectId == 0)
+        {
+            <MudItem xs="12" sm="7">
+                <MudText Typo="Typo.h6">
+                    Если у Вас возник вопрос, сначала просмотрите ответы на
+                    <MudLink Href="https://sites.google.com/view/spupk/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0/%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D1%8B-%D0%BD%D0%B0-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B" Target="_blank">часто возникающие вопросы</MudLink>
+                </MudText>
+                <MudText Typo="Typo.subtitle1">Если Вы не нашли ответ, оставьте вопрос в форме ниже</MudText>
+            </MudItem>
+        }
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-4">
+                <MainFeedbackForm SubjectId="SubjectId" />
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <MudText Typo="Typo.h4">Такой темы нет</MudText>
+}
+
+@code {
+    [Parameter] public int SubjectId { get; set; }
+
+    private bool IsSubjectIdValid { get; set; }
+
+    protected override void OnInitialized()
+    {
+        IsSubjectIdValid = _context.Subjects.Find(SubjectId) is not null;
+    }
+}
