@@ -3,7 +3,7 @@
 
 @inject FeedbackContext _context;
 
-<PageTitle>Главная</PageTitle>
+<PageTitle>@PageTitle</PageTitle>
 
 @if (SubjectId == 0 || IsSubjectIdValid)
 {
@@ -35,8 +35,14 @@ else
 
     private bool IsSubjectIdValid { get; set; }
 
+    private string PageTitle;
+
     protected override void OnInitialized()
     {
-        IsSubjectIdValid = _context.Subjects.Find(SubjectId) is not null;
+        Subject? subject = _context.Subjects.Find(SubjectId);
+
+        IsSubjectIdValid = subject is not null;
+
+        PageTitle = IsSubjectIdValid ? subject.ShortValue : "Главная";
     }
 }
