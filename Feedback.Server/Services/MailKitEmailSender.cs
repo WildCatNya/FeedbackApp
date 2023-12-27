@@ -18,7 +18,7 @@ public sealed class MailKitEmailSender : IMailKitEmailSender
     public void Send(MimeMessage message)
     {
         if (!_client.IsConnected)
-            _client.Connect(_configuration["SMTP:Address"], 465, true);
+            _client.Connect(_configuration["SMTP:Address"], 465, MailKit.Security.SecureSocketOptions.SslOnConnect);
 
         if (!_client.IsAuthenticated)
             _client.Authenticate(_configuration["SMTP:Login"], _configuration["SMTP:Password"]);
